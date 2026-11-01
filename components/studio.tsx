@@ -1,10 +1,19 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import {
   ArrowDownToLine,
   ArrowLeft,
   ArrowRight,
+  Home,
+  Eye,
+  Undo2,
+  Redo2,
+  Maximize2,
+  SlidersHorizontal,
+  Play,
+  ZoomIn,
+  ZoomOut,
   Check,
   ChevronDown,
   Cloud,
@@ -30,7 +39,16 @@ import {
 } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import ThemeToggle from '@/components/theme-toggle';
-import { getSample, getSampleImage, SAMPLE_PRODUCTS } from '@/lib/samples';
+import BrandLogo from '@/components/brand-logo';
+import StudioOverview from '@/components/studio-overview';
+import CreativeControls from '@/components/creative-controls';
+import LocalBrandKit from '@/components/local-brand-kit';
+import AssetProof from '@/components/asset-proof';
+import { readSavedBrand } from '@/lib/local-brand';
+import { useProjectHistory } from '@/lib/use-project-history';
+import { applyGeneratedAsset } from '@/lib/shopify/client';
+import type { AssetTarget } from '@/lib/shopify/types';
+import { getSample, getProjectImage, SAMPLE_PRODUCTS } from '@/lib/samples';
 import {
   DEFAULT_PRODUCT,
   THEMES,
@@ -52,8 +70,29 @@ import {
   safeName,
 } from '@/lib/export';
 
-type View = 'workspace' | 'saved' | 'brand' | 'connections';
+type View = 'overview' | 'workspace' | 'saved' | 'brand' | 'connections';
 type Tab = 'carousel' | 'listing' | 'social' | 'review';
+const assetTabs = [
+  { id: 'carousel', label: 'Social carousel', count: '05' },
+  { id: 'listing', label: 'Product listing', count: '' },
+  { id: 'social', label: 'Captions & email', count: '' },
+  { id: 'review', label: 'Review', count: '' },
+] as const;
+const briefSignature = (product: Product) =>
+  JSON.stringify(
+    [
+      'name',
+      'brand',
+      'category',
+      'audience',
+      'facts',
+      'price',
+      'currency',
+      'voice',
+      'cta',
+      'url',
+    ].map((key) => (product[key as keyof Product] || '').trim()),
+  );
 const initialSample = getSample();
 const starter: Project = {
   id: 'sample',
@@ -61,6 +100,7 @@ const starter: Project = {
   product: initialSample.product,
   kit: createTemplateKit(initialSample.product),
   image: null,
+  sampleId: initialSample.id,
   theme: initialSample.theme,
   source: 'template',
 };
@@ -80,6 +120,7 @@ function Preview({
   useEffect(() => {
     let active = true;
     setReady(false);
+    setError(false);
     const offscreen = document.createElement('canvas');
     drawSlide(offscreen, project, index)
       .then(() => {
@@ -99,18 +140,22 @@ function Preview({
   }, [project, index]);
   return (
     <div className={small ? 'canvas-frame small' : 'canvas-frame'} aria-busy={!ready && !error}>
-      {error ? (
-        <p>Image preview unavailable. Try replacing the photo.</p>
-      ) : (
-        <canvas
-          ref={ref}
-          width={1080}
-          height={1350}
-          role="img"
-          aria-label={`Slide ${index + 1}: ${project.kit.slides[index].headline}`}
-          data-ready={ready}
-        />
+      {!ready && !error && (
+        <div className="ws-preview-loader">
+          <LoaderCircle size={17} className="spin" />
+          <span>Drawing preview…</span>
+        </div>
       )}
+      {error && <p role="alert">Image preview unavailable. Try replacing the photo.</p>}
+      <canvas
+        ref={ref}
+        width={1080}
+        height={1350}
+        role="img"
+        aria-label={`Slide ${index + 1}: ${project.kit.slides[index].headline}`}
+        data-ready={ready}
+        hidden={error}
+      />
     </div>
   );
 }
@@ -119,18 +164,23 @@ function Modal({
   children,
   title,
   onClose,
+  className,
 }: {
   children: React.ReactNode;
   title: string;
   onClose: () => void;
+  className?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   useEffect(() => {
     ref.current?.showModal();
   }, []);
   return (
     <dialog
+      className={className}
       ref={ref}
+      aria-labelledby={titleId}
       onCancel={(e) => {
         e.preventDefault();
         onClose();
@@ -140,7 +190,7 @@ function Modal({
       }}
     >
       <div className="modal-head">
-        <h2>{title}</h2>
+        <h2 id={titleId}>{title}</h2>
         <button className="icon-btn" aria-label="Close dialog" onClick={onClose}>
           <X size={19} />
         </button>
@@ -209,21 +259,40 @@ function CopyField({
   );
 }
 
-export default function Studio({ initialSampleId }: { initialSampleId?: string }) {
-  const [view, setView] = useState<View>('workspace');
-  const [tab, setTab] = useState<Tab>('carousel');
-  const [project, setProject] = useState<Project>(() => {
-    const sample = getSample(initialSampleId);
-    return {
-      ...starter,
-      product: sample.product,
-      kit: createTemplateKit(sample.product),
-      theme: sample.theme,
-    };
-  });
+export default function Studio({
+  initialSampleId,
+  initialTheme,
+  initialSlide = 0,
+  initialTab = 'carousel',
+}: {
+  initialSampleId?: string;
+  initialTheme?: Theme;
+  initialSlide?: number;
+  initialTab?: Tab;
+}) {
+  const [view, setView] = useState<View>(initialSampleId ? 'workspace' : 'overview');
+  const [tab, setTab] = useState<Tab>(initialTab);
+  const { project, setProject, resetProject, syncProject, undo, redo, canUndo, canRedo } =
+    useProjectHistory(() => {
+      const sample = getSample(initialSampleId || 'fragrance');
+      return {
+        ...starter,
+        product: sample.product,
+        sampleId: sample.id,
+        kit: createTemplateKit(sample.product),
+        theme: initialTheme || sample.theme,
+      };
+    });
   const [dirty, setDirty] = useState(false);
   const [briefChanged, setBriefChanged] = useState(false);
-  const [slide, setSlide] = useState(0);
+  const [slide, setSlide] = useState(initialSlide);
+  const [mobilePane, setMobilePane] = useState<'canvas' | 'brief'>('canvas');
+  const [inspector, setInspector] = useState<'design' | 'copy'>('design');
+  const [zoom, setZoom] = useState(100);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [tour, setTour] = useState<number | null>(null);
+  const [proof, setProof] = useState<'shop' | 'instagram' | 'email'>('shop');
   const [engine, setEngine] = useState<'template' | 'gemini'>('template');
   const [apiKey, setApiKey] = useState('');
   const [keyInput, setKeyInput] = useState('');
@@ -241,13 +310,31 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
   const [password, setPassword] = useState('');
   const [authMessage, setAuthMessage] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const assetTabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const restoreRef = useRef<HTMLInputElement>(null);
+  const latestProject = useRef(project);
+  latestProject.current = project;
+  const projectEpoch = useRef(0);
+  const photoRequest = useRef(0);
+  const briefBaselines = useRef(new WeakMap<Kit, string>());
+  const previousKit = useRef(project.kit);
   const db = getSupabase();
   const notify = useCallback((s: string) => setToast(s), []);
   const fail = (e: unknown) =>
     setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.');
 
+  useEffect(() => {
+    // Keep each history snapshot tied to the brief that produced its copy. Text
+    // edits inherit that baseline; full regeneration explicitly replaces it.
+    let baseline = briefBaselines.current.get(project.kit);
+    if (baseline === undefined) {
+      baseline = briefBaselines.current.get(previousKit.current) ?? briefSignature(project.product);
+      briefBaselines.current.set(project.kit, baseline);
+    }
+    previousKit.current = project.kit;
+    setBriefChanged(!project.product.facts.trim() || baseline !== briefSignature(project.product));
+  }, [project.kit, project.product]);
   useEffect(() => {
     listProjects()
       .then(setSaved)
@@ -276,28 +363,43 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
   }, [dirty]);
 
   function editProduct<K extends keyof Product>(key: K, value: Product[K]) {
-    setProject((p) => ({ ...p, product: { ...p.product, [key]: value } }));
+    setProject((p) => ({ ...p, product: { ...p.product, [key]: value } }), `product:${key}`);
     setDirty(true);
     setBriefChanged(true);
   }
   function editKit<K extends keyof Kit>(key: K, value: Kit[K]) {
-    setProject((p) => ({ ...p, kit: { ...p.kit, [key]: value } }));
+    setProject((p) => ({ ...p, kit: { ...p.kit, [key]: value } }), `kit:${key}`);
     setDirty(true);
   }
   function editSlide(key: 'eyebrow' | 'headline' | 'body', value: string) {
-    setProject((p) => ({
-      ...p,
-      kit: {
-        ...p.kit,
-        slides: p.kit.slides.map((s, i) => (i === slide ? { ...s, [key]: value } : s)),
-      },
-    }));
+    setProject(
+      (p) => ({
+        ...p,
+        kit: {
+          ...p.kit,
+          slides: p.kit.slides.map((s, i) => (i === slide ? { ...s, [key]: value } : s)),
+        },
+      }),
+      `slide:${slide}:${key}`,
+    );
     setDirty(true);
   }
   function changeView(next: View) {
     setView(next);
     setMenuOpen(false);
     setError('');
+  }
+  function navigateAssetTabs(event: KeyboardEvent<HTMLDivElement>) {
+    const current = assetTabs.findIndex((item) => item.id === tab);
+    let next = current;
+    if (event.key === 'ArrowRight') next = (current + 1) % assetTabs.length;
+    else if (event.key === 'ArrowLeft') next = (current + assetTabs.length - 1) % assetTabs.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = assetTabs.length - 1;
+    else return;
+    event.preventDefault();
+    setTab(assetTabs[next].id);
+    assetTabRefs.current[next]?.focus();
   }
   function openProject(p: Project) {
     if (
@@ -308,10 +410,14 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
     )
       return;
     try {
-      setProject(validateProject(p));
+      const restored = validateProject(p);
+      projectEpoch.current += 1;
+      briefBaselines.current.set(restored.kit, briefSignature(restored.product));
+      resetProject(restored);
       setDirty(false);
       setBriefChanged(false);
       setSlide(0);
+      setMobilePane('canvas');
       changeView('workspace');
     } catch (e) {
       fail(e);
@@ -325,6 +431,7 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
       )
     )
       return;
+    projectEpoch.current += 1;
     const product: Product = {
       ...DEFAULT_PRODUCT,
       name: 'Your next product',
@@ -334,18 +441,29 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
       price: '',
       cta: 'Explore the collection',
     };
-    setProject({
+    const preset = readSavedBrand();
+    if (preset) {
+      product.brand = preset.name;
+      product.voice = preset.branding.voice;
+      product.cta = preset.branding.cta;
+    }
+    const kit = createTemplateKit(product);
+    briefBaselines.current.set(kit, briefSignature(product));
+    resetProject({
       ...starter,
       id: crypto.randomUUID(),
       product,
-      kit: createTemplateKit(product),
+      kit,
       image: null,
+      sampleId: undefined,
       updatedAt: new Date().toISOString(),
+      ...(preset ? { branding: preset.branding } : {}),
     });
     setDirty(false);
     setBriefChanged(true);
     setSlide(0);
     setTab('carousel');
+    setMobilePane('brief');
     changeView('workspace');
     notify('New project created. Add your product facts to get started.');
   }
@@ -355,41 +473,57 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
       !window.confirm('Switch examples? Save your current changes first if you want to keep them.')
     )
       return;
+    projectEpoch.current += 1;
     const sample = getSample(id);
-    setProject({
+    const kit = createTemplateKit(sample.product);
+    briefBaselines.current.set(kit, briefSignature(sample.product));
+    resetProject({
       ...starter,
       product: sample.product,
-      kit: createTemplateKit(sample.product),
+      sampleId: sample.id,
+      kit,
       theme: sample.theme,
     });
     setDirty(false);
     setBriefChanged(false);
     setSlide(0);
     setError('');
+    setMobilePane('canvas');
+    changeView('workspace');
   }
   async function upload(file?: File) {
     if (!file) return;
+    const epoch = projectEpoch.current;
+    const request = ++photoRequest.current;
     try {
       const image = await readPhoto(file);
-      setProject((p) => ({ ...p, image }));
+      if (epoch !== projectEpoch.current || request !== photoRequest.current) return;
+      setProject((p) => ({ ...p, image, sampleId: undefined }));
       setDirty(true);
       notify('Photo added. It stays in your browser until you choose Gemini or cloud save.');
     } catch (e) {
-      fail(e);
+      if (epoch === projectEpoch.current && request === photoRequest.current) fail(e);
+    } finally {
+      if (request === photoRequest.current && fileRef.current) fileRef.current.value = '';
     }
-    if (fileRef.current) fileRef.current.value = '';
   }
-  async function generate() {
+  async function generate(target: AssetTarget = 'all') {
     setError('');
     try {
       const product = validateProduct(project.product);
       if (
-        dirty &&
+        (target !== 'all' || dirty) &&
         !briefChanged &&
-        !window.confirm('Regenerate the copy? This replaces your manual text edits.')
+        !window.confirm(
+          target === 'all'
+            ? 'Regenerate the full kit? This replaces the current text. You can undo this change.'
+            : 'Regenerate this asset? Other edited assets will be preserved. You can undo this change.',
+        )
       )
         return;
       setBusy('generate');
+      const epoch = projectEpoch.current;
+      const originalProduct = project.product;
       let kit: Kit;
       if (engine === 'template') kit = createTemplateKit(product);
       else {
@@ -406,13 +540,36 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
         if (!response.ok) throw new Error(result.error || 'Could not generate your kit.');
         kit = result.kit;
       }
-      setProject((p) => ({ ...p, product, kit, source: engine }));
+      if (epoch !== projectEpoch.current) {
+        notify('The project changed, so the generated result was discarded.');
+        return;
+      }
+      const changedDuringRequest = latestProject.current.product !== originalProduct;
+      const current = latestProject.current;
+      const mergedKit = applyGeneratedAsset(current.kit, kit, target);
+      const baseline =
+        target === 'all'
+          ? briefSignature(product)
+          : (briefBaselines.current.get(current.kit) ?? briefSignature(originalProduct));
+      briefBaselines.current.set(mergedKit, baseline);
+      setProject({
+        ...current,
+        product: changedDuringRequest ? current.product : product,
+        kit: mergedKit,
+        source: engine,
+      });
       setDirty(true);
-      setBriefChanged(false);
-      setSlide(0);
+      setBriefChanged(
+        changedDuringRequest ||
+          baseline !== briefSignature(changedDuringRequest ? current.product : product),
+      );
+      if (target === 'all') setSlide(0);
+      setMobilePane('canvas');
       notify(
         engine === 'template'
-          ? 'Your fact-based template kit is ready to edit.'
+          ? target === 'all'
+            ? 'Your fact-based template kit is ready to edit.'
+            : 'This asset is refreshed. Your other edits are preserved.'
           : 'Your Gemini launch kit is ready. Review every claim.',
       );
     } catch (e) {
@@ -424,6 +581,8 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
   async function save(toCloud = false) {
     setError('');
     try {
+      const epoch = projectEpoch.current;
+      const snapshot = project;
       const p = validateProject({
         ...project,
         id: project.id === 'sample' ? crypto.randomUUID() : project.id,
@@ -431,8 +590,11 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
       });
       setBusy('save');
       await saveProject(p);
-      setProject(p);
-      setDirty(false);
+      if (epoch === projectEpoch.current) {
+        const changed = latestProject.current !== snapshot;
+        syncProject(changed ? { ...latestProject.current, id: p.id, updatedAt: p.updatedAt } : p);
+        setDirty(changed);
+      }
       setSaved(await listProjects());
       if (toCloud) {
         await cloudSave(p);
@@ -547,15 +709,39 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
   }
 
   const facts = factLines(project.product);
-  const photo = project.image || getSampleImage(project.product);
+  const photo = getProjectImage(project);
+  function changePalette(key: Theme) {
+    setProject((p) => ({
+      ...p,
+      theme: key,
+      ...(p.branding
+        ? {
+            branding: {
+              ...p.branding,
+              background: THEMES[key].bg,
+              ink: THEMES[key].ink,
+              primary: THEMES[key].accent,
+            },
+          }
+        : {}),
+    }));
+    setDirty(true);
+  }
+  function changeCreative(patch: Partial<Project>) {
+    setProject((p) => ({ ...p, ...patch }));
+    setDirty(true);
+    if (patch.product) setBriefChanged(true);
+  }
   const titles = {
+    overview: 'Your creative desk',
     workspace: 'Launch workspace',
     saved: 'Your projects',
     brand: 'Brand direction',
     connections: 'Connections',
   };
   const nav = [
-    { id: 'workspace' as View, icon: Grid2X2, label: 'Workspace' },
+    { id: 'overview' as View, icon: Home, label: 'Overview' },
+    { id: 'workspace' as View, icon: Grid2X2, label: 'Creative studio' },
     { id: 'saved' as View, icon: FolderOpen, label: 'Saved kits' },
     { id: 'brand' as View, icon: Palette, label: 'Brand studio' },
     { id: 'connections' as View, icon: Settings2, label: 'Connections' },
@@ -569,7 +755,7 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
       <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
         <a className="wordmark" href="/" aria-label="StudioShelf home">
           <span className="logo">
-            <Layers size={23} strokeWidth={1.7} />
+            <BrandLogo size={30} />
           </span>
           <span>StudioShelf</span>
         </a>
@@ -616,7 +802,7 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
           </button>
         </div>
       </aside>
-      <div className="main-shell">
+      <div className={`main-shell view-${view}`}>
         <header className="topbar">
           <div>
             <button
@@ -654,13 +840,15 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
               <p className="eyebrow">STUDIOSHELF / {view.toUpperCase()}</p>
               <h1>{titles[view]}</h1>
               <p>
-                {view === 'workspace'
-                  ? 'Create, refine, and export a consistent product launch.'
-                  : view === 'saved'
-                    ? 'Every launch, organized and ready to pick up again.'
-                    : view === 'brand'
-                      ? 'Set the voice and visual direction for this launch.'
-                      : 'Bring your own tools. Keep control of your creative work.'}
+                {view === 'overview'
+                  ? 'Everything you need to introduce what you make.'
+                  : view === 'workspace'
+                    ? 'Create, refine, and export a consistent product launch.'
+                    : view === 'saved'
+                      ? 'Every launch, organized and ready to pick up again.'
+                      : view === 'brand'
+                        ? 'Set the voice and visual direction for this launch.'
+                        : 'Bring your own tools. Keep control of your creative work.'}
               </p>
             </div>
             <button className="btn btn-dark" onClick={newKit}>
@@ -676,8 +864,84 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
             </div>
           )}
 
+          {view === 'overview' && (
+            <StudioOverview
+              project={project}
+              saved={saved}
+              onOpenEditor={() => changeView('workspace')}
+              onSample={loadSample}
+              onOpenSaved={openProject}
+              onViewSaved={() => changeView('saved')}
+              onBrand={() => changeView('brand')}
+              onTour={() => setTour(0)}
+              onAsset={(next) => {
+                setTab(next);
+                setMobilePane('canvas');
+                changeView('workspace');
+              }}
+              Preview={Preview}
+            />
+          )}
+
           {view === 'workspace' && (
             <>
+              <div className="ws-commandbar">
+                <button className="ws-back" onClick={() => changeView('overview')}>
+                  <ArrowLeft size={16} /> My creative desk
+                </button>
+                <div className="ws-history">
+                  <button
+                    className="icon-btn"
+                    title="Undo"
+                    aria-label="Undo last change"
+                    disabled={!canUndo || !!busy}
+                    onClick={() => {
+                      undo();
+                      setDirty(true);
+                    }}
+                  >
+                    <Undo2 size={17} />
+                  </button>
+                  <button
+                    className="icon-btn"
+                    title="Redo"
+                    aria-label="Redo last change"
+                    disabled={!canRedo || !!busy}
+                    onClick={() => {
+                      redo();
+                      setDirty(true);
+                    }}
+                  >
+                    <Redo2 size={17} />
+                  </button>
+                </div>
+                <button className="ws-preview-button" onClick={() => setFullscreen(true)}>
+                  <Eye size={16} /> Preview
+                </button>
+                <button className="btn btn-light" onClick={() => save()} disabled={!!busy}>
+                  <FolderOpen size={15} /> Save changes
+                </button>
+                <button
+                  className="btn btn-dark"
+                  onClick={() => setExportOpen(true)}
+                  disabled={!!busy}
+                >
+                  <Download size={15} /> Download kit
+                </button>
+              </div>
+              <div className="ws-project-title">
+                <div>
+                  <span className="eyebrow">YOUR CURRENT LAUNCH</span>
+                  <h1>{project.product.name}</h1>
+                  <p>
+                    {project.product.brand} <span>·</span> {facts.length} product facts{' '}
+                    <span>·</span> 9 editable assets
+                  </p>
+                </div>
+                <button onClick={() => setTour(0)}>
+                  <Play size={14} /> Quick walkthrough
+                </button>
+              </div>
               <div className="sample-rail">
                 <span>Explore an example</span>
                 <div>
@@ -701,7 +965,21 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                   Use your own product <ArrowRight size={14} />
                 </button>
               </div>
-              <div className="workspace-grid">
+              <div className="ws-mobile-panes" aria-label="Editor panel">
+                <button
+                  aria-pressed={mobilePane === 'canvas'}
+                  onClick={() => setMobilePane('canvas')}
+                >
+                  <Grid2X2 size={15} /> Canvas & assets
+                </button>
+                <button
+                  aria-pressed={mobilePane === 'brief'}
+                  onClick={() => setMobilePane('brief')}
+                >
+                  <SlidersHorizontal size={15} /> Product brief
+                </button>
+              </div>
+              <div className="workspace-grid" data-pane={mobilePane}>
                 <section className="brief-panel" aria-label="Product brief">
                   <div className="section-label">
                     <span className="step-number">01</span>
@@ -727,7 +1005,7 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                           alt={
                             project.image
                               ? `${project.product.name} product photo`
-                              : `Illustrated sample: ${project.product.name}`
+                              : `AI-generated concept photograph: ${project.product.name}`
                           }
                         />
                       ) : (
@@ -745,13 +1023,14 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                       {project.image
                         ? 'Your original photo · resized for export'
                         : photo
-                          ? 'Illustrated sample · fictional product'
+                          ? 'Concept photograph · fictional product'
                           : 'JPG, PNG or WebP · up to 12 MB'}
                     </span>
                     {project.image && (
                       <button
                         className="remove-photo"
                         onClick={() => {
+                          photoRequest.current += 1;
                           setProject((p) => ({ ...p, image: null }));
                           setDirty(true);
                         }}
@@ -894,7 +1173,7 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                       <button
                         className="btn btn-purple generate-btn"
                         disabled={!!busy}
-                        onClick={generate}
+                        onClick={() => generate()}
                       >
                         {busy === 'generate' ? (
                           <LoaderCircle size={17} className="spin" />
@@ -918,28 +1197,30 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                   <div className="output-head">
                     <div>
                       <span className="eyebrow">LIVE PREVIEW</span>
-                      <h2>Your launch, assembled.</h2>
+                      <h2>Make a good first impression.</h2>
                     </div>
                     <span className="engine-badge">
                       <span className="status-dot" />
                       {project.source === 'gemini' ? 'Gemini draft' : 'Template draft'}
                     </span>
                   </div>
-                  <div className="output-tabs" role="tablist" aria-label="Launch kit assets">
-                    {(
-                      [
-                        { id: 'carousel', label: 'Social carousel', count: '05' },
-                        { id: 'listing', label: 'Product listing', count: '' },
-                        { id: 'social', label: 'Captions & email', count: '' },
-                        { id: 'review', label: 'Review', count: '' },
-                      ] as const
-                    ).map((t) => (
+                  <div
+                    className="output-tabs"
+                    role="tablist"
+                    aria-label="Launch kit assets"
+                    onKeyDown={navigateAssetTabs}
+                  >
+                    {assetTabs.map((t, index) => (
                       <button
                         key={t.id}
+                        ref={(element) => {
+                          assetTabRefs.current[index] = element;
+                        }}
                         role="tab"
                         id={`tab-${t.id}`}
                         aria-selected={tab === t.id}
                         aria-controls={`panel-${t.id}`}
+                        tabIndex={tab === t.id ? 0 : -1}
                         className={tab === t.id ? 'tab active' : 'tab'}
                         onClick={() => setTab(t.id)}
                       >
@@ -957,141 +1238,215 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                     role="tabpanel"
                     id={`panel-${tab}`}
                     aria-labelledby={`tab-${tab}`}
+                    tabIndex={0}
                     className="tab-content"
                   >
                     {tab === 'carousel' && (
-                      <>
-                        <div className="artboard">
-                          <div className="artboard-tools">
-                            <span>
-                              INSTAGRAM PORTRAIT <i>1080 × 1350</i>
-                            </span>
-                            <div className="theme-dots" aria-label="Colour themes">
-                              {(Object.keys(THEMES) as Theme[]).map((key) => (
-                                <button
-                                  key={key}
-                                  aria-label={THEMES[key].name}
-                                  aria-pressed={project.theme === key}
-                                  title={THEMES[key].name}
-                                  className={project.theme === key ? 'selected' : ''}
-                                  style={{ background: THEMES[key].bg }}
-                                  onClick={() => {
-                                    setProject((p) => ({ ...p, theme: key }));
-                                    setDirty(true);
-                                  }}
-                                >
-                                  {project.theme === key && <Check size={11} />}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="main-preview">
-                            <Preview project={project} index={slide} />
-                          </div>
-                          <div className="slide-navigation">
-                            <button
-                              className="icon-btn"
-                              aria-label="Previous slide"
-                              disabled={slide === 0}
-                              onClick={() => setSlide(slide - 1)}
-                            >
-                              <ArrowLeft size={17} />
-                            </button>
-                            <span>
-                              Slide <strong>{String(slide + 1).padStart(2, '0')}</strong> of 05
-                            </span>
-                            <button
-                              className="icon-btn"
-                              aria-label="Next slide"
-                              disabled={slide === 4}
-                              onClick={() => setSlide(slide + 1)}
-                            >
-                              <ArrowRight size={17} />
-                            </button>
-                          </div>
-                        </div>
-                        <div className="slide-thumbnails">
-                          {project.kit.slides.map((s, i) => (
-                            <button
-                              key={i}
-                              className={slide === i ? 'thumbnail active' : 'thumbnail'}
-                              onClick={() => setSlide(i)}
-                              aria-label={`Edit slide ${i + 1}: ${s.headline}`}
-                              aria-pressed={slide === i}
-                            >
-                              <Preview project={project} index={i} small />
+                      <div className="ws-stage">
+                        <div className="ws-stage-main">
+                          <div className="artboard">
+                            <div className="artboard-tools">
                               <span>
-                                {
-                                  [
-                                    'The introduction',
-                                    'The details',
-                                    'A closer look',
-                                    'Your story',
-                                    'The invitation',
-                                  ][i]
-                                }
+                                INSTAGRAM PORTRAIT <i>1080 × 1350</i>
                               </span>
-                            </button>
-                          ))}
-                        </div>
-                        <details className="slide-editor">
-                          <summary>
-                            <span>
-                              <Palette size={15} /> Make this slide yours
-                            </span>
-                            <ChevronDown size={15} />
-                          </summary>
-                          <div className="editor-fields">
-                            <Field label="Eyebrow">
-                              <input
-                                value={project.kit.slides[slide].eyebrow}
-                                maxLength={80}
-                                onChange={(e) => editSlide('eyebrow', e.target.value)}
-                              />
-                            </Field>
-                            <Field label="Headline">
-                              <textarea
-                                rows={2}
-                                maxLength={100}
-                                value={project.kit.slides[slide].headline}
-                                onChange={(e) => editSlide('headline', e.target.value)}
-                              />
-                            </Field>
-                            <Field label="Body copy">
-                              <textarea
-                                rows={3}
-                                maxLength={240}
-                                value={project.kit.slides[slide].body}
-                                onChange={(e) => editSlide('body', e.target.value)}
-                              />
-                            </Field>
-                            <small>
-                              Long text is shortened to fit the artwork. Preview every slide before
-                              exporting.
-                            </small>
-                            <button
-                              className="btn btn-light"
-                              disabled={!!busy}
-                              onClick={async () => {
-                                try {
-                                  await exportSlide(project, slide);
-                                  notify('Slide PNG downloaded.');
-                                } catch (e) {
-                                  fail(e);
+                              <div className="theme-dots" aria-label="Colour themes">
+                                {(Object.keys(THEMES) as Theme[]).map((key) => (
+                                  <button
+                                    key={key}
+                                    aria-label={THEMES[key].name}
+                                    aria-pressed={project.theme === key}
+                                    title={THEMES[key].name}
+                                    className={project.theme === key ? 'selected' : ''}
+                                    style={{ background: THEMES[key].bg }}
+                                    onClick={() => changePalette(key)}
+                                  >
+                                    {project.theme === key && <Check size={11} />}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div
+                              className="ws-canvas-scroll"
+                              tabIndex={0}
+                              aria-label="Slide canvas. Use left and right arrow keys to browse slides."
+                              onKeyDown={(event) => {
+                                if (event.key === 'ArrowRight') {
+                                  event.preventDefault();
+                                  setSlide((index) => Math.min(4, index + 1));
+                                }
+                                if (event.key === 'ArrowLeft') {
+                                  event.preventDefault();
+                                  setSlide((index) => Math.max(0, index - 1));
                                 }
                               }}
                             >
-                              <Download size={15} /> Download this slide
+                              <div
+                                className="main-preview"
+                                style={{ width: `calc(var(--canvas-base, 330px) * ${zoom / 100})` }}
+                              >
+                                <Preview project={project} index={slide} />
+                              </div>
+                            </div>
+                            <div className="ws-canvas-controls">
+                              <button
+                                aria-label="Zoom out"
+                                disabled={zoom <= 60}
+                                onClick={() => setZoom((value) => Math.max(60, value - 20))}
+                              >
+                                <ZoomOut size={15} />
+                              </button>
+                              <button onClick={() => setZoom(100)} aria-label="Reset preview zoom">
+                                {zoom}%
+                              </button>
+                              <button
+                                aria-label="Zoom in"
+                                disabled={zoom >= 160}
+                                onClick={() => setZoom((value) => Math.min(160, value + 20))}
+                              >
+                                <ZoomIn size={15} />
+                              </button>
+                              <button
+                                aria-label="Open large preview"
+                                onClick={() => setFullscreen(true)}
+                              >
+                                <Maximize2 size={15} />
+                              </button>
+                            </div>
+                            <div className="slide-navigation">
+                              <button
+                                className="icon-btn"
+                                aria-label="Previous slide"
+                                disabled={slide === 0}
+                                onClick={() => setSlide(slide - 1)}
+                              >
+                                <ArrowLeft size={17} />
+                              </button>
+                              <span>
+                                Slide <strong>{String(slide + 1).padStart(2, '0')}</strong> of 05
+                              </span>
+                              <button
+                                className="icon-btn"
+                                aria-label="Next slide"
+                                disabled={slide === 4}
+                                onClick={() => setSlide(slide + 1)}
+                              >
+                                <ArrowRight size={17} />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="slide-thumbnails">
+                            {project.kit.slides.map((s, i) => (
+                              <button
+                                key={i}
+                                className={slide === i ? 'thumbnail active' : 'thumbnail'}
+                                onClick={() => setSlide(i)}
+                                aria-label={`Edit slide ${i + 1}: ${s.headline}`}
+                                aria-pressed={slide === i}
+                              >
+                                <Preview project={project} index={i} small />
+                                <span>
+                                  {
+                                    [
+                                      'The introduction',
+                                      'The details',
+                                      'A closer look',
+                                      'Your story',
+                                      'The invitation',
+                                    ][i]
+                                  }
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <aside className="ws-inspector">
+                          <div className="ws-inspector-tabs" aria-label="Canvas controls">
+                            <button
+                              aria-pressed={inspector === 'design'}
+                              onClick={() => setInspector('design')}
+                            >
+                              <SlidersHorizontal size={14} /> Design
+                            </button>
+                            <button
+                              aria-pressed={inspector === 'copy'}
+                              onClick={() => setInspector('copy')}
+                            >
+                              <Copy size={14} /> Text
                             </button>
                           </div>
-                        </details>
-                      </>
+                          {inspector === 'design' ? (
+                            <CreativeControls project={project} onChange={changeCreative} />
+                          ) : (
+                            <section className="slide-editor">
+                              <h3>Slide {slide + 1} · make it yours</h3>
+                              <div className="editor-fields">
+                                <Field label="Eyebrow">
+                                  <input
+                                    value={project.kit.slides[slide].eyebrow}
+                                    maxLength={80}
+                                    onChange={(e) => editSlide('eyebrow', e.target.value)}
+                                  />
+                                </Field>
+                                <Field label="Headline">
+                                  <textarea
+                                    rows={2}
+                                    maxLength={100}
+                                    value={project.kit.slides[slide].headline}
+                                    onChange={(e) => editSlide('headline', e.target.value)}
+                                  />
+                                </Field>
+                                <Field label="Body copy">
+                                  <textarea
+                                    rows={3}
+                                    maxLength={240}
+                                    value={project.kit.slides[slide].body}
+                                    onChange={(e) => editSlide('body', e.target.value)}
+                                  />
+                                </Field>
+                                <small>
+                                  Long text is shortened to fit the artwork. Preview every slide
+                                  before exporting.
+                                </small>
+                                <button
+                                  className="btn btn-light"
+                                  disabled={!!busy}
+                                  onClick={() => generate(`slide:${slide}`)}
+                                >
+                                  <Sparkles size={14} /> Refresh this slide
+                                </button>
+                                <button
+                                  className="btn btn-light"
+                                  disabled={!!busy}
+                                  onClick={async () => {
+                                    try {
+                                      await exportSlide(project, slide);
+                                      notify('Slide PNG downloaded.');
+                                    } catch (e) {
+                                      fail(e);
+                                    }
+                                  }}
+                                >
+                                  <Download size={15} /> Download this slide
+                                </button>
+                              </div>
+                            </section>
+                          )}
+                        </aside>
+                      </div>
                     )}
                     {tab === 'listing' && (
                       <div className="text-panel">
+                        <AssetProof project={project} mode="shop" Preview={Preview} />
                         <div className="text-intro">
                           <h3>Ready for your shop window.</h3>
                           <p>Refine the details. Make every word sound like your brand.</p>
+                          <button
+                            className="ws-inline-action"
+                            disabled={!!busy}
+                            onClick={() => generate('listing')}
+                          >
+                            <Sparkles size={14} /> Refresh listing only
+                          </button>
                         </div>
                         <CopyField
                           label="Listing title"
@@ -1134,9 +1489,39 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                     )}
                     {tab === 'social' && (
                       <div className="text-panel">
+                        <div className="ws-proof-switch" aria-label="Channel preview">
+                          <button
+                            aria-pressed={proof !== 'email'}
+                            onClick={() => setProof('instagram')}
+                          >
+                            Social post
+                          </button>
+                          <button
+                            aria-pressed={proof === 'email'}
+                            onClick={() => setProof('email')}
+                          >
+                            Launch email
+                          </button>
+                        </div>
+                        <AssetProof
+                          project={project}
+                          mode={proof === 'email' ? 'email' : 'instagram'}
+                          Preview={Preview}
+                        />
                         <div className="text-intro">
                           <h3>One voice. Every channel.</h3>
                           <p>Your launch, with a consistent voice from post to inbox.</p>
+                        </div>
+                        <div className="ws-channel-refresh">
+                          <button disabled={!!busy} onClick={() => generate('instagram')}>
+                            <Sparkles size={13} /> Refresh Instagram
+                          </button>
+                          <button disabled={!!busy} onClick={() => generate('whatsapp')}>
+                            <Sparkles size={13} /> Refresh WhatsApp
+                          </button>
+                          <button disabled={!!busy} onClick={() => generate('email')}>
+                            <Sparkles size={13} /> Refresh email
+                          </button>
                         </div>
                         <CopyField
                           label="Instagram caption"
@@ -1335,70 +1720,46 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
           )}
 
           {view === 'brand' && (
-            <div className="settings-grid">
-              <section className="settings-card">
-                <p className="eyebrow">YOUR BRAND, YOUR WAY</p>
-                <h2>A look that feels familiar.</h2>
-                <p>
-                  Set the direction for this kit. Save a kit to reuse its brand and colours later.
-                </p>
-                <Field label="Brand name">
-                  <input
-                    value={project.product.brand}
-                    maxLength={80}
-                    onChange={(e) => editProduct('brand', e.target.value)}
-                  />
-                </Field>
-                <Field label="Voice">
-                  <select
-                    value={project.product.voice}
-                    onChange={(e) => editProduct('voice', e.target.value)}
-                  >
-                    {[
-                      'Warm & thoughtful',
-                      'Bold & playful',
-                      'Clean & minimal',
-                      'Elegant & editorial',
-                    ].map((x) => (
-                      <option key={x}>{x}</option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="Call to action">
-                  <input
-                    maxLength={80}
-                    value={project.product.cta}
-                    onChange={(e) => editProduct('cta', e.target.value)}
-                  />
-                </Field>
-                <h3>Choose your palette</h3>
-                <div className="theme-cards">
-                  {(Object.keys(THEMES) as Theme[]).map((key) => (
-                    <button
-                      key={key}
-                      className={project.theme === key ? 'theme-card selected' : 'theme-card'}
-                      onClick={() => {
-                        setProject((p) => ({ ...p, theme: key }));
-                        setDirty(true);
-                      }}
-                      aria-pressed={project.theme === key}
-                    >
-                      <span style={{ background: THEMES[key].bg, color: THEMES[key].ink }}>
-                        Aa
-                        <span style={{ background: THEMES[key].accent }} />
-                      </span>
-                      {THEMES[key].name}
-                      {project.theme === key && <Check size={15} />}
-                    </button>
-                  ))}
+            <div className="settings-grid ws-brand-workspace">
+              <LocalBrandKit
+                project={project}
+                onChange={changeCreative}
+                onNotice={notify}
+                onError={setError}
+              />
+              <section className="brand-preview ws-brand-preview">
+                <div>
+                  <span className="eyebrow">LIVE BRAND PREVIEW</span>
+                  <h2>A look that travels with you.</h2>
+                  <p>Your logo and colours, on the actual exported artwork.</p>
                 </div>
-                <button className="btn btn-purple" onClick={() => changeView('workspace')}>
-                  Back to your canvas <ArrowRight size={16} />
-                </button>
-              </section>
-              <section className="brand-preview">
                 <Preview project={project} index={slide} />
-                <p>Your current kit · live preview</p>
+                <div className="ws-brand-preview-nav">
+                  <button
+                    disabled={slide === 0}
+                    onClick={() => setSlide((index) => index - 1)}
+                    aria-label="Previous brand preview"
+                  >
+                    <ArrowLeft size={16} />
+                  </button>
+                  <span>Slide {slide + 1} of 5</span>
+                  <button
+                    disabled={slide === 4}
+                    onClick={() => setSlide((index) => index + 1)}
+                    aria-label="Next brand preview"
+                  >
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+                <button
+                  className="btn btn-dark"
+                  onClick={() => {
+                    setTab('carousel');
+                    changeView('workspace');
+                  }}
+                >
+                  Continue in creative studio <ArrowRight size={15} />
+                </button>
               </section>
             </div>
           )}
@@ -1589,6 +1950,285 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
             <X size={14} />
           </button>
         </div>
+      )}
+      {fullscreen && (
+        <Modal
+          title={
+            tab === 'carousel'
+              ? `Slide ${slide + 1} — ${project.product.name}`
+              : 'Your content, in context'
+          }
+          className="ws-preview-modal"
+          onClose={() => setFullscreen(false)}
+        >
+          {error && (
+            <p className="alert" role="alert">
+              {error}
+            </p>
+          )}
+          {tab === 'carousel' ? (
+            <div className="ws-large-preview">
+              <Preview project={project} index={slide} />
+              <div className="ws-large-nav">
+                <button
+                  className="btn btn-light"
+                  disabled={slide === 0}
+                  onClick={() => setSlide((index) => index - 1)}
+                >
+                  <ArrowLeft size={16} /> Previous
+                </button>
+                <span>{slide + 1} / 5</span>
+                <button
+                  className="btn btn-light"
+                  disabled={slide === 4}
+                  onClick={() => setSlide((index) => index + 1)}
+                >
+                  Next <ArrowRight size={16} />
+                </button>
+              </div>
+              <button
+                className="btn btn-dark"
+                disabled={!!busy}
+                onClick={async () => {
+                  try {
+                    await exportSlide(project, slide);
+                    notify('Slide PNG downloaded.');
+                  } catch (error) {
+                    fail(error);
+                  }
+                }}
+              >
+                <Download size={15} /> Download this PNG
+              </button>
+            </div>
+          ) : (
+            <div className="ws-large-proof">
+              <div className="ws-proof-switch">
+                {(['shop', 'instagram', 'email'] as const).map((mode) => (
+                  <button key={mode} aria-pressed={proof === mode} onClick={() => setProof(mode)}>
+                    {mode === 'shop'
+                      ? 'Shop listing'
+                      : mode === 'instagram'
+                        ? 'Social post'
+                        : 'Launch email'}
+                  </button>
+                ))}
+              </div>
+              <AssetProof project={project} mode={proof} Preview={Preview} />
+            </div>
+          )}
+        </Modal>
+      )}
+      {exportOpen && (
+        <Modal
+          title="Take your launch with you."
+          className="ws-export-modal"
+          onClose={() => setExportOpen(false)}
+        >
+          {error && (
+            <p className="alert" role="alert">
+              {error}
+            </p>
+          )}
+          {toast && (
+            <p className="alert" role="status">
+              {toast}
+            </p>
+          )}
+          <div className="ws-export-intro">
+            <div>
+              <Preview project={project} index={0} small />
+            </div>
+            <section>
+              <span className="eyebrow">YOUR DOWNLOAD</span>
+              <h3>{project.product.name}</h3>
+              <p>Editable copy. Branded artwork. Ready for your final review.</p>
+              <span>
+                {project.source === 'gemini' ? 'Gemini draft' : 'Fact-based template'} ·{' '}
+                {project.branding ? 'Custom brand' : THEMES[project.theme].name}
+              </span>
+            </section>
+          </div>
+          <ul className="ws-export-manifest">
+            <li>
+              <Check size={16} />
+              <span>
+                <strong>Five carousel PNGs</strong>
+                <small>1080 × 1350 · your current design</small>
+              </span>
+              <span>PNG</span>
+            </li>
+            <li>
+              <Check size={16} />
+              <span>
+                <strong>Listing, captions & email</strong>
+                <small>Markdown copy and CSV worksheet</small>
+              </span>
+              <span>TXT</span>
+            </li>
+            <li>
+              <Check size={16} />
+              <span>
+                <strong>Editable project backup</strong>
+                <small>Includes photos, brand and design settings</small>
+              </span>
+              <span>JSON</span>
+            </li>
+          </ul>
+          <p className="ws-export-note">
+            Review facts and text fit before sharing. Downloads do not publish to any account.
+          </p>
+          <button
+            className="btn btn-dark ws-export-primary"
+            disabled={!!busy}
+            onClick={async () => {
+              await exportAll();
+            }}
+          >
+            {busy === 'export' ? (
+              <LoaderCircle className="spin" size={17} />
+            ) : (
+              <Download size={17} />
+            )}{' '}
+            {busy === 'export' ? 'Preparing your files…' : 'Download complete ZIP'}
+          </button>
+          <button
+            className="ws-inline-action"
+            onClick={() => {
+              setExportOpen(false);
+              setTab('review');
+              setMobilePane('canvas');
+            }}
+          >
+            Review product facts first <ArrowRight size={14} />
+          </button>
+        </Modal>
+      )}
+      {tour !== null && (
+        <Modal
+          title="A launch kit in three small steps."
+          className="ws-tour-modal"
+          onClose={() => setTour(null)}
+        >
+          {error && (
+            <p className="alert" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="ws-tour-progress">
+            {['Choose a product', 'Find your look', 'Make it yours'].map((label, index) => (
+              <button
+                key={label}
+                aria-current={tour === index ? 'step' : undefined}
+                onClick={() => setTour(index)}
+              >
+                <span>{index + 1}</span>
+                {label}
+              </button>
+            ))}
+          </div>
+          {tour === 0 ? (
+            <div className="ws-tour-step">
+              <h3>Start with something real.</h3>
+              <p>
+                Choose a fictional example to explore, or use your own product photo and facts in
+                the studio.
+              </p>
+              <div className="ws-tour-samples">
+                {SAMPLE_PRODUCTS.map((sample) => (
+                  <button
+                    key={sample.id}
+                    onClick={() => {
+                      loadSample(sample.id);
+                      setTour(1);
+                    }}
+                  >
+                    <img src={sample.image} alt="" />
+                    <strong>{sample.label}</strong>
+                    <span>
+                      Explore this kit <ArrowRight size={13} />
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : tour === 1 ? (
+            <div className="ws-tour-design">
+              <div>
+                <Preview project={project} index={0} />
+              </div>
+              <section>
+                <h3>See your decisions take shape.</h3>
+                <p>These controls change the same artwork that appears in the downloaded PNG.</p>
+                <CreativeControls project={project} onChange={changeCreative} />
+                <button className="btn btn-dark" onClick={() => setTour(2)}>
+                  Next: make it yours <ArrowRight size={15} />
+                </button>
+              </section>
+            </div>
+          ) : (
+            <div className="ws-tour-step">
+              <h3>Your product. Your final say.</h3>
+              <p>
+                Edit a headline, preview every slide, then download the actual artwork. Templates
+                work without an account or API key.
+              </p>
+              <Field label="Try editing the first headline">
+                <input
+                  maxLength={100}
+                  value={project.kit.slides[0].headline}
+                  onChange={(event) => {
+                    setProject(
+                      (p) => ({
+                        ...p,
+                        kit: {
+                          ...p.kit,
+                          slides: p.kit.slides.map((item, index) =>
+                            index === 0 ? { ...item, headline: event.target.value } : item,
+                          ),
+                        },
+                      }),
+                      'tour-headline',
+                    );
+                    setDirty(true);
+                  }}
+                />
+              </Field>
+              <div className="ws-tour-final">
+                <div>
+                  <Preview project={project} index={0} />
+                </div>
+                <section>
+                  <button
+                    className="btn btn-light"
+                    onClick={async () => {
+                      try {
+                        await exportSlide(project, 0);
+                        notify('Your edited PNG is downloaded.');
+                      } catch (error) {
+                        fail(error);
+                      }
+                    }}
+                  >
+                    <Download size={15} /> Download this preview
+                  </button>
+                  <button
+                    className="btn btn-dark"
+                    onClick={() => {
+                      setTour(null);
+                      setTab('carousel');
+                      setMobilePane('canvas');
+                      setInspector('copy');
+                      changeView('workspace');
+                    }}
+                  >
+                    Continue creating <ArrowRight size={15} />
+                  </button>
+                </section>
+              </div>
+            </div>
+          )}
+        </Modal>
       )}
       {authOpen && db && (
         <Modal
