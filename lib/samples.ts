@@ -1,7 +1,7 @@
-import type { Product, Theme } from './types';
+import type { Product, Project, SampleId, Theme } from './types';
 
 export type SampleProduct = {
-  id: string;
+  id: SampleId;
   label: string;
   product: Product;
   image: string;
@@ -13,7 +13,7 @@ export const SAMPLE_PRODUCTS: SampleProduct[] = [
   {
     id: 'headphones',
     label: 'Headphones',
-    image: '/samples/headphones.svg',
+    image: '/samples/headphones-photo.png',
     theme: 'graphite',
     product: {
       name: 'Studio Headphones',
@@ -31,7 +31,7 @@ export const SAMPLE_PRODUCTS: SampleProduct[] = [
   {
     id: 'fragrance',
     label: 'Fragrance',
-    image: '/samples/fragrance.svg',
+    image: '/samples/fragrance-photo.png',
     theme: 'clay',
     product: {
       name: 'No. 04 Eau de Parfum',
@@ -49,7 +49,7 @@ export const SAMPLE_PRODUCTS: SampleProduct[] = [
   {
     id: 'tote',
     label: 'Everyday tote',
-    image: '/samples/tote.svg',
+    image: '/samples/tote-photo.png',
     theme: 'forest',
     product: {
       name: 'The Everyday Tote',
@@ -73,4 +73,14 @@ export function getSample(id?: string | null): SampleProduct {
 export function getSampleImage(product: Product): string | null {
   if (product.name === 'The Sunday Mug') return '/sample-mug.svg';
   return SAMPLE_PRODUCTS.find((sample) => sample.product.name === product.name)?.image || null;
+}
+
+// A selected concept belongs to the project, so editing the brief must not
+// remove its photograph. Name lookup remains for older project backups.
+export function getProjectImage(
+  project: Pick<Project, 'image' | 'sampleId' | 'product'>,
+): string | null {
+  if (project.image) return project.image;
+  const sample = SAMPLE_PRODUCTS.find((item) => item.id === project.sampleId);
+  return sample?.image || getSampleImage(project.product);
 }
