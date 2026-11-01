@@ -113,13 +113,28 @@ export async function drawSlide(canvas: HTMLCanvasElement, project: Project, ind
   canvas.width = 1080;
   canvas.height = 1350;
   const ctx = canvas.getContext('2d')!;
-  const t = THEMES[project.theme];
+  const t = project.branding
+    ? {
+        ...THEMES[project.theme],
+        bg: project.branding.background,
+        ink: project.branding.ink,
+        accent: project.branding.primary,
+        light: project.branding.background,
+      }
+    : THEMES[project.theme];
   const s: Slide = project.kit.slides[index];
   const modern = project.theme === 'graphite';
   ctx.fillStyle = t.bg;
   ctx.fillRect(0, 0, 1080, 1350);
   ctx.fillStyle = t.ink;
-  block(ctx, project.product.brand, 74, 85, 780, '28px Arial', 32, 1);
+  let brandX = 74;
+  if (project.branding?.logo) {
+    const logo = await loadImage(project.branding.logo);
+    const scale = Math.min(96 / logo.width, 50 / logo.height);
+    ctx.drawImage(logo, 74, 49, logo.width * scale, logo.height * scale);
+    brandX += logo.width * scale + 18;
+  }
+  block(ctx, project.product.brand, brandX, 85, 850 - brandX, '28px Arial', 32, 1);
   ctx.font = '22px Arial';
   ctx.textAlign = 'right';
   ctx.fillText(`0${index + 1} / 05`, 1006, 85);

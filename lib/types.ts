@@ -8,6 +8,15 @@ export type Product = {
   currency: string;
   voice: string;
   cta: string;
+  url?: string;
+};
+export type Branding = {
+  logo: string | null;
+  primary: string;
+  background: string;
+  ink: string;
+  voice: string;
+  cta: string;
 };
 export type Slide = { eyebrow: string; headline: string; body: string };
 export type Kit = {
@@ -31,6 +40,7 @@ export type Project = {
   image: string | null;
   theme: Theme;
   source: 'template' | 'gemini';
+  branding?: Branding;
 };
 
 export const DEFAULT_PRODUCT: Product = {

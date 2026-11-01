@@ -4,11 +4,19 @@ A product launch studio for independent sellers. Turn confirmed product facts an
 
 This is a working source-code product, with a no-account demo and optional Gemini / Supabase integrations. It includes no customer base, revenue, marketplace accounts, domain ownership or promised resale value.
 
-![StudioShelf product homepage in dark mode](docs/preview.png)
+## Shopify app integration
 
-See the [light-mode homepage](docs/preview-light.png) and [studio workspace](docs/studio-preview.png).
+The embedded workspace is at `/shopify`. It includes product search and variant import, confirmed facts, generation and individual asset regeneration, reusable store branding, shared store kits, ZIP exports, stale-product review, and approved description updates with restoration history. App Bridge supplies fresh identity tokens; the server exchanges them for online Shopify tokens and checks store identity and effective staff permissions on every protected request. No Shopify access token is stored in the database.
 
-The [sample launch kit](demo/sample-launch-kit.zip) is a fresh UI-generated export of the Studio Headphones example in Graphite. It contains five PNGs at 1080 × 1350 pixels, launch copy and an editable project backup. The source includes a [buyer handoff](docs/BUYER_HANDOFF.md) and a [verification report](docs/VERIFICATION.md).
+Shopify registration, live credentials and development-store tests are deliberately deferred. Without configuration, `/shopify` shows setup guidance and never pretends that a store is connected. The existing `/studio` continues to work without Shopify. Start with the [Shopify setup and test matrix](docs/SHOPIFY.md), then run `npm run check:shopify` before public launch. This release offers a free development beta; hosted AI is disabled by default and no paid plan is offered.
+
+Public pages: `/help`, `/privacy`, `/support`, `/pricing`. Set `STUDIOSHELF_SUPPORT_EMAIL` before inviting merchants. The privacy page describes the implemented data flow and still requires the operator's identity/contact and final review before public distribution.
+
+![StudioShelf editorial homepage in light mode](docs/preview.png)
+
+See the [dark-mode homepage](docs/preview-dark.png), [studio workspace](docs/studio-preview.png), [logo and brand guide](docs/BRAND.md), and [image-generation prompts](docs/ASSET_PROMPTS.md). The [private GitHub repository](https://github.com/Mustafamgbng/studioshelf) uses feature branches and pull requests for updates.
+
+The [sample launch kit](demo/sample-launch-kit.zip) is a fresh UI-generated export of the No. 04 fragrance example with photographic concept imagery. It contains five PNGs at 1080 × 1350 pixels, launch copy and an editable project backup. The source includes a [buyer handoff](docs/BUYER_HANDOFF.md) and a [verification report](docs/VERIFICATION.md).
 
 ## Quick start
 
@@ -34,7 +42,8 @@ pnpm dev
 
 ## What works
 
-- Product homepage with interactive sample selection and direct links into the studio.
+- Editorial product homepage with a floating navigation dock, interactive sample selection, and direct links into the studio.
+- Original StudioShelf monogram, wordmark and favicon, with photographic AI-generated concept examples.
 - Light and dark interface modes, with a remembered browser preference.
 - Fact-based template engine that runs locally, clearly labeled separately from AI.
 - Gemini server route with image understanding, structured JSON output, bounded input and output validation, provider-error handling and timeouts.
@@ -61,7 +70,7 @@ Free-tier inputs may be used to improve Google's products. Use non-confidential 
 
 1. Create a Supabase project in your account.
 2. Run `supabase/migrations/001_initial.sql` once in its SQL editor.
-3. Add the project URL and publishable/anon key as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local` or your hosting environment. **Do not use a service-role key.**
+3. For standalone email accounts, add the project URL and publishable/anon key as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Never put a service-role key in either public setting. Shopify's separate server-only store storage uses `SUPABASE_SERVICE_ROLE_KEY` and migration `002_shopify.sql`; see the Shopify guide.
 4. Enable email/password authentication. Configure your deployment's Site URL and email confirmation settings in Supabase Auth.
 5. Restart/redeploy after changing the public environment variables.
 6. Sign up in Connections, confirm your email if required, and sign in. Use **Save current kit to cloud**; find it under **Saved kits → Cloud**.
@@ -94,7 +103,8 @@ lib/samples.ts           Fictional product briefs and sample-image lookup
 lib/storage.ts           IndexedDB and backup validation
 lib/supabase.ts          Optional authenticated cloud repository
 lib/types.ts             Shared domain model and brand palettes
-public/samples/          Original headphones, fragrance and tote illustrations
+public/samples/          Generated headphones, fragrance and tote concept photos
+public/brand/            Original StudioShelf SVG and PNG logo assets
 public/sample-mug.svg    Legacy mug illustration for older demo projects
 supabase/migrations/     Owner isolation and hosted-key quota
 tests/                   Domain, export and mocked API tests

@@ -1,5 +1,6 @@
 import { validateKit, validateProduct } from './engine';
 import type { Project } from './types';
+import { validateBranding } from './branding';
 
 async function database(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -65,5 +66,6 @@ export function validateProject(value: unknown): Project {
     image: p.image,
     theme: p.theme,
     source: p.source,
+    ...(p.branding ? { branding: validateBranding(p.branding) } : {}),
   };
 }
