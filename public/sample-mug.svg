@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">
+  <defs>
+    <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#ead1bc"/><stop offset="1" stop-color="#d5ac8e"/></linearGradient>
+    <linearGradient id="body"><stop stop-color="#c57f58"/><stop offset=".25" stop-color="#dfac87"/><stop offset=".65" stop-color="#efc5a3"/><stop offset="1" stop-color="#c58d69"/></linearGradient>
+    <linearGradient id="handle"><stop stop-color="#e8b996"/><stop offset="1" stop-color="#ba7851"/></linearGradient>
+    <linearGradient id="inside" x2="0" y2="1"><stop stop-color="#9d6346"/><stop offset="1" stop-color="#d6a37f"/></linearGradient>
+    <radialGradient id="coffee"><stop stop-color="#513022"/><stop offset=".85" stop-color="#6b422d"/><stop offset="1" stop-color="#b77b4c"/></radialGradient>
+    <filter id="shadow"><feGaussianBlur stdDeviation="20"/></filter>
+    <pattern id="speckle" width="51" height="43" patternUnits="userSpaceOnUse"><circle cx="11" cy="7" r="1.5" fill="#714932" opacity=".26"/><circle cx="36" cy="30" r="1" fill="#80523c" opacity=".3"/><circle cx="5" cy="33" r=".8" fill="#fff" opacity=".4"/></pattern>
+  </defs>
+  <path fill="url(#bg)" d="M0 0h1000v1000H0z"/>
+  <path d="M0 780L700 1000H0z" fill="#f0ded0" opacity=".65"/>
+  <path d="M0 805L610 1000M0 830L520 1000M0 860L430 1000" stroke="#bca18f" stroke-width="3" opacity=".35"/>
+  <ellipse cx="514" cy="781" rx="253" ry="53" fill="#6a4029" opacity=".3" filter="url(#shadow)"/>
+  <path d="M690 410C870 360 866 680 701 674L685 624C787 647 805 445 695 463Z" fill="url(#handle)" stroke="#bd815e" stroke-width="10"/>
+  <path d="M266 390C266 365 711 365 711 390L685 697C680 794 300 794 293 697Z" fill="url(#body)"/>
+  <path d="M266 390C266 365 711 365 711 390L685 697C680 794 300 794 293 697Z" fill="url(#speckle)"/>
+  <path d="M298 444L314 686C320 721 350 734 375 743" stroke="#f8d9ba" stroke-width="12" opacity=".3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="488" cy="389" rx="222" ry="81" fill="#e9bd98"/>
+  <ellipse cx="488" cy="389" rx="204" ry="65" fill="url(#inside)"/>
+  <ellipse cx="488" cy="400" rx="193" ry="50" fill="url(#coffee)"/>
+  <path d="M339 386C367 368 404 363 443 365" fill="none" stroke="#e5b27e" stroke-width="5" opacity=".55" stroke-linecap="round"/>
+  <path d="M440 280C400 230 481 205 450 155M530 278C487 231 572 205 544 147" stroke="#fff4df" stroke-width="6" fill="none" opacity=".25" stroke-linecap="round"/>
+</svg>

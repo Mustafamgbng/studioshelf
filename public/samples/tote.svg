@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d3d8ca"/><stop offset=".6" stop-color="#b6bdac"/><stop offset="1" stop-color="#9ba58e"/></linearGradient>
+    <linearGradient id="fabric" x1="0" y1="0" x2="1" y2=".3"><stop stop-color="#bcb6a4"/><stop offset=".18" stop-color="#e0dccb"/><stop offset=".5" stop-color="#f1eddc"/><stop offset=".8" stop-color="#ded8c4"/><stop offset="1" stop-color="#b6ae97"/></linearGradient>
+    <linearGradient id="handle" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#3c4b37"/><stop offset=".4" stop-color="#6a7756"/><stop offset=".8" stop-color="#46533c"/><stop offset="1" stop-color="#35422e"/></linearGradient>
+    <linearGradient id="bottom" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d3cdb9"/><stop offset="1" stop-color="#a9a18a"/></linearGradient>
+    <pattern id="weave" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 1h8M1 0v8" stroke="#7b735d" stroke-width=".5" opacity=".17"/><path d="M0 5h8M5 0v8" stroke="#fffdf0" stroke-width=".8" opacity=".3"/></pattern>
+    <pattern id="strapWeave" width="5" height="6" patternUnits="userSpaceOnUse"><path d="M0 2h5" stroke="#c4c8a6" stroke-width=".8" opacity=".22"/></pattern>
+    <filter id="shadow"><feGaussianBlur stdDeviation="21"/></filter>
+  </defs>
+  <path fill="url(#bg)" d="M0 0h1200v1200H0z"/>
+  <path d="M0 930L1200 725v475H0Z" fill="#74846b" opacity=".12"/>
+  <ellipse cx="594" cy="1006" rx="287" ry="39" fill="#3d4b32" opacity=".23" filter="url(#shadow)"/>
+  <g transform="rotate(7 600 600)">
+    <path d="M397 539V350C397 153 741 153 741 350V539" fill="none" stroke="#35432e" stroke-width="49"/>
+    <path d="M397 539V350C397 153 741 153 741 350V539" fill="none" stroke="url(#handle)" stroke-width="41"/>
+    <path d="M397 539V350C397 153 741 153 741 350V539" fill="none" stroke="url(#strapWeave)" stroke-width="41"/>
+    <path d="M374 472L844 472L864 932C863 979 331 979 331 932Z" fill="#9f9985"/>
+    <path d="M345 455C470 472 728 470 839 452L827 925C817 970 351 976 323 928Z" fill="url(#fabric)" stroke="#b8b09a" stroke-width="3"/>
+    <path d="M345 455C470 472 728 470 839 452L827 925C817 970 351 976 323 928Z" fill="url(#weave)"/>
+    <path d="M345 455C466 473 715 473 839 452L837 490C705 508 467 507 342 492Z" fill="#d6d0bc" stroke="#b5ae97" stroke-width="2"/>
+    <path d="M352 484C464 500 715 500 826 481" fill="none" stroke="#f9f5e5" stroke-width="2" stroke-dasharray="5 5"/>
+    <path d="M356 506L339 915C355 938 397 947 429 949M816 509L808 911C787 939 738 947 700 950" stroke="#b4ab92" stroke-width="3" opacity=".6" fill="none"/>
+    <path d="M355 510L346 909M812 511L803 910" stroke="#faf7e8" stroke-width="2" stroke-dasharray="5 5" opacity=".7"/>
+    <path d="M323 928C366 974 790 976 827 925L804 969C719 1000 428 1000 345 971Z" fill="url(#bottom)"/>
+    <path d="M416 531V336C416 194 705 194 705 336V529" fill="none" stroke="#283827" stroke-width="48" opacity=".18"/>
+    <path d="M424 530V331C424 188 713 188 713 331V529" fill="none" stroke="url(#handle)" stroke-width="43"/>
+    <path d="M424 530V331C424 188 713 188 713 331V529" fill="none" stroke="url(#strapWeave)" stroke-width="43"/>
+    <path d="M409 337V518M698 337V517" stroke="#9da786" stroke-width="2" stroke-dasharray="4 5" opacity=".7"/>
+    <path d="M439 337V518M728 337V517" stroke="#9da786" stroke-width="2" stroke-dasharray="4 5" opacity=".7"/>
+    <path d="M405 503h38v43h-38zM694 503h38v43h-38z" fill="none" stroke="#889672" stroke-width="2"/>
+    <path d="M405 503l38 43m-38 0l38-43M694 503l38 43m-38 0l38-43" stroke="#889672" stroke-width="1.5"/>
+    <g fill="#41523b" text-anchor="middle"><text x="579" y="696" font-family="Arial,sans-serif" font-size="33" font-weight="700" letter-spacing="2">COMMON</text><text x="579" y="738" font-family="Arial,sans-serif" font-size="33" font-weight="700" letter-spacing="3">GOODS</text><path d="M539 775h80" stroke="#41523b" stroke-width="2"/><text x="579" y="810" font-family="Arial,sans-serif" font-size="10" letter-spacing="3">CARRY WHAT MATTERS.</text></g>
+    <path d="M470 537C452 630 463 871 451 923M744 542C754 654 746 817 762 920" stroke="#fffced" stroke-width="7" opacity=".12" fill="none"/>
+  </g>
+</svg>

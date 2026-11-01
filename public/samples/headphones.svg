@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="bg" cx="47%" cy="35%" r="80%"><stop stop-color="#393a40"/><stop offset=".6" stop-color="#222328"/><stop offset="1" stop-color="#16171b"/></radialGradient>
+    <linearGradient id="arch" x1="0" y1="0" x2="1" y2=".4"><stop stop-color="#191a1e"/><stop offset=".22" stop-color="#60616a"/><stop offset=".45" stop-color="#24252b"/><stop offset=".7" stop-color="#44464f"/><stop offset="1" stop-color="#15161b"/></linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#565962"/><stop offset=".28" stop-color="#b4b7bf"/><stop offset=".49" stop-color="#686d77"/><stop offset="1" stop-color="#25282f"/></linearGradient>
+    <linearGradient id="shell" x1="0" y1="0" x2="1" y2=".5"><stop stop-color="#63666e"/><stop offset=".16" stop-color="#393c43"/><stop offset=".5" stop-color="#24262d"/><stop offset=".84" stop-color="#33363e"/><stop offset="1" stop-color="#13151a"/></linearGradient>
+    <linearGradient id="pad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#33343b"/><stop offset=".45" stop-color="#111217"/><stop offset="1" stop-color="#3b3d45"/></linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7c8089"/><stop offset=".4" stop-color="#353842"/><stop offset="1" stop-color="#17191e"/></linearGradient>
+    <radialGradient id="light"><stop stop-color="#a4a2d1" stop-opacity=".13"/><stop offset="1" stop-color="#7975b8" stop-opacity="0"/></radialGradient>
+    <filter id="shadow"><feGaussianBlur stdDeviation="24"/></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <path fill="url(#bg)" d="M0 0h1200v1200H0z"/>
+  <circle cx="720" cy="360" r="430" fill="url(#light)"/>
+  <ellipse cx="604" cy="1001" rx="291" ry="42" fill="#000" opacity=".6" filter="url(#shadow)"/>
+  <g transform="rotate(-12 600 600)">
+    <path d="M337 670V482C337 306 447 218 600 218S863 306 863 482V670" fill="none" stroke="#111318" stroke-width="87" stroke-linecap="round"/>
+    <path d="M338 662V482C338 310 449 228 600 228S862 310 862 482V662" fill="none" stroke="url(#arch)" stroke-width="68" stroke-linecap="round"/>
+    <path d="M356 462C365 313 459 249 600 249C741 249 835 313 844 462" fill="none" stroke="#7a7b85" stroke-width="2" opacity=".7"/>
+    <path d="M377 447C393 337 480 283 600 283C720 283 807 337 823 447" fill="none" stroke="#0b0c10" stroke-width="27" stroke-linecap="round"/>
+    <path d="M370 511L368 711" fill="none" stroke="url(#metal)" stroke-width="27" stroke-linecap="round"/>
+    <path d="M830 511L832 711" fill="none" stroke="url(#metal)" stroke-width="27" stroke-linecap="round"/>
+    <g transform="rotate(9 365 766)">
+      <rect x="275" y="609" width="191" height="328" rx="93" fill="#0b0c10"/>
+      <rect x="269" y="607" width="181" height="324" rx="89" fill="url(#pad)" stroke="#45474f" stroke-width="2"/>
+      <rect x="285" y="631" width="140" height="276" rx="68" fill="#101116" stroke="#262830" stroke-width="12"/>
+      <rect x="315" y="604" width="125" height="326" rx="61" fill="url(#shell)" stroke="#52555e" stroke-width="2"/>
+      <path d="M371 625C336 625 332 652 332 687V852C332 887 342 910 367 910" fill="none" stroke="#8a8c96" opacity=".3" stroke-width="3"/>
+      <path d="M425 665V852" stroke="#0d0f13" stroke-width="7" stroke-linecap="round"/>
+    </g>
+    <g transform="rotate(-9 835 766)">
+      <rect x="739" y="609" width="191" height="328" rx="93" fill="#0b0c10"/>
+      <rect x="750" y="607" width="181" height="324" rx="89" fill="url(#pad)" stroke="#45474f" stroke-width="2"/>
+      <rect x="774" y="631" width="140" height="276" rx="68" fill="#101116" stroke="#262830" stroke-width="12"/>
+      <rect x="760" y="604" width="125" height="326" rx="61" fill="url(#shell)" stroke="#555862" stroke-width="2"/>
+      <path d="M815 624C784 628 777 651 777 684V850C777 883 786 907 809 911" fill="none" stroke="#c4c5cf" opacity=".25" stroke-width="3"/>
+      <path d="M870 676V838" stroke="#0d0f13" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="821" cy="882" r="5" fill="#b1b7c9"/>
+      <text x="820" y="778" font-family="Arial,sans-serif" font-size="16" fill="#9b9fa9" text-anchor="middle" letter-spacing="4" transform="rotate(90 820 778)">FORM</text>
+    </g>
+  </g>
+  <path d="M160 1070h880" stroke="#52535b" opacity=".15"/>
+</svg>
