@@ -1,0 +1,10 @@
+.git
+.next
+node_modules
+.env*
+!.env.example
+*.tsbuildinfo
+*.log
+docs
+demo
+tests

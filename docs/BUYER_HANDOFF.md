@@ -8,6 +8,8 @@ The practical distinction from a prompt wrapper is the finished workflow: inputs
 
 The product homepage lives at `/`; the creative workspace lives at `/studio`. The homepage lets visitors compare headphones, fragrance and everyday tote examples before opening an editable project. Both views provide light and dark interface modes with a remembered browser preference.
 
+The source now includes an embedded Shopify workspace at `/shopify`, with product/variant import, shared store kits, branding, selective regeneration, approved description writes and restoration history. Shopify app registration, service credentials, development-store verification and review are intentionally deferred. This is an integration codebase, not an approved or installed public Shopify app. Use `SHOPIFY.md` and `SHOPIFY_VERIFICATION.md` for setup and honest validation limits.
+
 ## Included
 
 - Next.js 16 / React 19 / TypeScript source with a pinned pnpm lockfile.
@@ -15,7 +17,7 @@ The product homepage lives at `/`; the creative workspace lives at `/studio`. Th
 - Optional Gemini integration with image input and structured validated output.
 - Optional Supabase auth, database schema, RLS policies and daily hosted-key quota.
 - Responsive homepage and workspace, light/dark interface modes, local project storage, backup and restore.
-- Three fictional product examples with original SVG illustrations, four campaign palettes and five carousel layouts. Graphite provides a darker sans-serif direction and is the headphones default. The original mug illustration remains for older demo projects.
+- Three fictional product examples with AI-generated concept photography, four campaign palettes and five carousel layouts. The original StudioShelf logo is included in SVG and PNG formats with a favicon. Graphite is the headphones default; the legacy mug illustration remains available for older projects.
 - Automated tests, architecture notes, setup and Vercel deployment instructions.
 
 ## Five-minute demonstration
@@ -28,13 +30,13 @@ The product homepage lives at `/`; the creative workspace lives at `/studio`. Th
 6. Export a ZIP; show all five 1080 × 1350 PNGs and the editable project backup.
 7. Optionally add your own Gemini key and generate from a different product brief and photo.
 
-The bundled `demo/sample-launch-kit.zip` is a fresh Studio Headphones export using Graphite. The package also includes dark and light homepage screenshots and a dark workspace screenshot. Follow the verification report for the exact checks performed and external integration limits.
+The bundled `demo/sample-launch-kit.zip` is a fresh No. 04 fragrance export using the photographic concept asset. The package also includes light and dark homepage screenshots and a workspace screenshot. Follow the verification report for exact checks and external integration limits.
 
 ## Possible buyers and extensions
 
 The likely audience to test is an agency creating recurring product-launch assets, a developer wanting an ecommerce micro-SaaS foundation, or a seller-tool operator needing a white-label workspace. This is a hypothesis, not validated demand.
 
-Potential next additions: custom brand palettes and logos, per-channel length rules, reusable product templates, multilingual copy, password reset, team workspaces and a publishing integration. Validate interest before paying to build them.
+Shopify store palettes, logos, staff sharing and description publishing are now implemented. Potential next additions include per-channel length rules, reusable product templates, multilingual copy and paid Shopify App Pricing plans after development-store testing and platform review. Validate interest before paying to build them.
 
 ## What not to advertise
 

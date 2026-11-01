@@ -1,8 +1,16 @@
 # Architecture
 
+## Shopify workspace
+
+`/shopify` adds a separate embedded workspace while preserving `/studio`. App Bridge supplies a fresh identity token per protected request; server-side online token exchange checks effective staff and installation scopes and obtains the live store ID. Shopify tokens are never saved. Service-role-only Supabase tables bind kits, branding, description history and usage to that verified store. Local browser storage is not used by this workspace.
+
+The GraphQL layer imports products and paginated variants. Selected images are fetched through an authenticated, ownership-checked image endpoint with CDN allowlisting, no redirects and a 3 MB limit; product images are requested at bounded dimensions. Fingerprints and store-currency comparisons prevent silent reuse of outdated imports. Partial regeneration merges only the requested asset on the server and into the latest editor state on the client.
+
+Optional product writes require `write_products`, a persisted before/after preview and explicit approval. Description history precedes the mutation; atomic preview claims prevent duplicate writes, and ambiguous outcomes require reconciliation. The iframe proxy sets verified per-store CSP and standalone frame denial. Durable signed webhooks cover privacy, uninstall, scopes and product changes. See [Shopify setup and limitations](SHOPIFY.md) and [current verification](SHOPIFY_VERIFICATION.md).
+
 ## Homepage and studio
 
-The `/` route introduces the product through an interactive launch preview, a workflow explanation and three fictional product examples. Each example links to `/studio?sample=<id>`, which opens the workspace with the corresponding brief and illustration. The studio remains directly accessible at `/studio`.
+The `/` route introduces the product with a warm editorial hero, a floating navigation dock, a workflow explanation and three fictional product examples. Each example links to `/studio?sample=<id>`, which opens the workspace with its brief and concept photograph. The studio remains directly accessible at `/studio`.
 
 The studio route awaits Next.js's `searchParams` and passes the selected sample ID into a keyed `Studio` component. The corresponding example is available in the server-rendered initial view; it does not depend on a later browser effect to read the URL.
 
@@ -10,7 +18,7 @@ The studio route awaits Next.js's `searchParams` and passes the selected sample 
 
 ## Interface themes
 
-The homepage and workspace share a light/dark control. A small head script applies the browser's saved `studioshelf-theme` preference before the initial paint. The control updates the document theme, records the preference in local storage when available, and synchronizes changes across open tabs. If storage is unavailable, the switch still works for the current page.
+The homepage and workspace share a light/dark control. Light is the default for new visitors; an existing saved preference is preserved. A small head script applies the browser's saved `studioshelf-theme` preference before the initial paint. The control updates the document theme, records the preference in local storage when available, and synchronizes changes across open tabs. If storage is unavailable, the switch still works for the current page.
 
 Interface theme and campaign palette are separate concerns. A visitor can use a dark interface while exporting a pale campaign, or use a light interface with a darker campaign palette. The preference is not included in a product backup and does not change the seller's product facts or copy.
 
@@ -32,11 +40,13 @@ A visitor-provided key is used only for that request. A server-owned key require
 
 ## Images and exports
 
+The bundled product examples use AI-generated concept photographs; their exact prompts and provenance are documented in `ASSET_PROMPTS.md`. The logo is an original SVG monogram with a reusable React component and favicon. Sample photos are separate from user uploads and do not represent actual products for sale.
+
 Uploaded photos are resized locally to at most 1400 pixels on their longest side and re-encoded as JPEG. Transparency is flattened onto white. We do not alter the product itself, remove backgrounds or invent a product scene. Gemini receives the resized image only when selected by the user.
 
 The same canvas renderer powers previews and exports, so edited copy and palettes appear in both. PNG dimensions are 1080 × 1350. Text wrapping handles long words and uses an ellipsis at its line limit. ZIP is generated in the browser, with five PNGs, Markdown, a formula-protected CSV and a portable JSON project. The CSV is not a marketplace API integration.
 
-The checked-in `demo/sample-launch-kit.zip` is a UI-generated export of the Studio Headphones example using Graphite. It includes the five rendered PNGs and a portable project backup. The older mug export is no longer bundled; the legacy illustration lookup remains for existing saved mug projects.
+The checked-in `demo/sample-launch-kit.zip` is a UI-generated export of the No. 04 fragrance example using the photographic concept asset. It includes the five rendered PNGs and a portable project backup. The older illustrated exports are no longer bundled; the legacy mug lookup remains for existing saved mug projects.
 
 ## Storage and accounts
 

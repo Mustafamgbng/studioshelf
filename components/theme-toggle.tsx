@@ -8,7 +8,7 @@ const STORAGE_KEY = 'studioshelf-theme';
 const CHANGE_EVENT = 'studioshelf-theme-change';
 
 function getTheme(): Theme {
-  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 }
 
 function updateDocument(theme: Theme) {
@@ -16,13 +16,13 @@ function updateDocument(theme: Theme) {
   document.documentElement.style.colorScheme = theme;
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute('content', theme === 'dark' ? '#08090b' : '#fafafa');
+    ?.setAttribute('content', theme === 'dark' ? '#101725' : '#f8f5ee');
 }
 
 function subscribe(onChange: () => void) {
   const onStorage = (event: StorageEvent) => {
     if (event.key !== STORAGE_KEY && event.key !== null) return;
-    updateDocument(event.newValue === 'light' ? 'light' : 'dark');
+    updateDocument(event.newValue === 'dark' ? 'dark' : 'light');
     onChange();
   };
   window.addEventListener(CHANGE_EVENT, onChange);
@@ -36,7 +36,7 @@ function subscribe(onChange: () => void) {
 export default function ThemeToggle({ className = '' }: { className?: string }) {
   // The server and first hydration snapshot are stable; the head script applies
   // the saved colours before paint, then this store reflects them after hydration.
-  const theme = useSyncExternalStore(subscribe, getTheme, () => 'dark' as Theme);
+  const theme = useSyncExternalStore(subscribe, getTheme, () => 'light' as Theme);
   useEffect(() => updateDocument(getTheme()), []);
   const action = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
 
