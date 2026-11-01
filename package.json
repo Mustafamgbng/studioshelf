@@ -10,6 +10,7 @@
     "build": "next build --webpack",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "next typegen && tsc --noEmit",
+    "check:shopify": "node --env-file-if-exists=.env.local scripts/check-shopify-config.mjs",
     "test": "tsx --test tests/*.test.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
