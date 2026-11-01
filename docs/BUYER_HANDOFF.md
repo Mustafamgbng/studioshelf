@@ -15,7 +15,7 @@ The product homepage lives at `/`; the creative workspace lives at `/studio`. Th
 - Optional Gemini integration with image input and structured validated output.
 - Optional Supabase auth, database schema, RLS policies and daily hosted-key quota.
 - Responsive homepage and workspace, light/dark interface modes, local project storage, backup and restore.
-- Three fictional product examples with original SVG illustrations, four campaign palettes and five carousel layouts. Graphite provides a darker sans-serif direction and is the headphones default. The original mug illustration remains for older demo projects.
+- Three fictional product examples with AI-generated concept photography, four campaign palettes and five carousel layouts. The original StudioShelf logo is included in SVG and PNG formats with a favicon. Graphite is the headphones default; the legacy mug illustration remains available for older projects.
 - Automated tests, architecture notes, setup and Vercel deployment instructions.
 
 ## Five-minute demonstration
@@ -28,7 +28,7 @@ The product homepage lives at `/`; the creative workspace lives at `/studio`. Th
 6. Export a ZIP; show all five 1080 × 1350 PNGs and the editable project backup.
 7. Optionally add your own Gemini key and generate from a different product brief and photo.
 
-The bundled `demo/sample-launch-kit.zip` is a fresh Studio Headphones export using Graphite. The package also includes dark and light homepage screenshots and a dark workspace screenshot. Follow the verification report for the exact checks performed and external integration limits.
+The bundled `demo/sample-launch-kit.zip` is a fresh No. 04 fragrance export using the photographic concept asset. The package also includes light and dark homepage screenshots and a workspace screenshot. Follow the verification report for exact checks and external integration limits.
 
 ## Possible buyers and extensions
 

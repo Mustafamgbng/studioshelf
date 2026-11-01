@@ -4,11 +4,11 @@ A product launch studio for independent sellers. Turn confirmed product facts an
 
 This is a working source-code product, with a no-account demo and optional Gemini / Supabase integrations. It includes no customer base, revenue, marketplace accounts, domain ownership or promised resale value.
 
-![StudioShelf product homepage in dark mode](docs/preview.png)
+![StudioShelf editorial homepage in light mode](docs/preview.png)
 
-See the [light-mode homepage](docs/preview-light.png) and [studio workspace](docs/studio-preview.png).
+See the [dark-mode homepage](docs/preview-dark.png), [studio workspace](docs/studio-preview.png), [logo and brand guide](docs/BRAND.md), and [image-generation prompts](docs/ASSET_PROMPTS.md). The [private GitHub repository](https://github.com/Mustafamgbng/studioshelf) uses feature branches and pull requests for updates.
 
-The [sample launch kit](demo/sample-launch-kit.zip) is a fresh UI-generated export of the Studio Headphones example in Graphite. It contains five PNGs at 1080 × 1350 pixels, launch copy and an editable project backup. The source includes a [buyer handoff](docs/BUYER_HANDOFF.md) and a [verification report](docs/VERIFICATION.md).
+The [sample launch kit](demo/sample-launch-kit.zip) is a fresh UI-generated export of the No. 04 fragrance example with photographic concept imagery. It contains five PNGs at 1080 × 1350 pixels, launch copy and an editable project backup. The source includes a [buyer handoff](docs/BUYER_HANDOFF.md) and a [verification report](docs/VERIFICATION.md).
 
 ## Quick start
 
@@ -34,7 +34,8 @@ pnpm dev
 
 ## What works
 
-- Product homepage with interactive sample selection and direct links into the studio.
+- Editorial product homepage with a floating navigation dock, interactive sample selection, and direct links into the studio.
+- Original StudioShelf monogram, wordmark and favicon, with photographic AI-generated concept examples.
 - Light and dark interface modes, with a remembered browser preference.
 - Fact-based template engine that runs locally, clearly labeled separately from AI.
 - Gemini server route with image understanding, structured JSON output, bounded input and output validation, provider-error handling and timeouts.
@@ -94,7 +95,8 @@ lib/samples.ts           Fictional product briefs and sample-image lookup
 lib/storage.ts           IndexedDB and backup validation
 lib/supabase.ts          Optional authenticated cloud repository
 lib/types.ts             Shared domain model and brand palettes
-public/samples/          Original headphones, fragrance and tote illustrations
+public/samples/          Generated headphones, fragrance and tote concept photos
+public/brand/            Original StudioShelf SVG and PNG logo assets
 public/sample-mug.svg    Legacy mug illustration for older demo projects
 supabase/migrations/     Owner isolation and hosted-key quota
 tests/                   Domain, export and mocked API tests

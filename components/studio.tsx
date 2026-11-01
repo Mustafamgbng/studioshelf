@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import ThemeToggle from '@/components/theme-toggle';
+import BrandLogo from '@/components/brand-logo';
 import { getSample, getSampleImage, SAMPLE_PRODUCTS } from '@/lib/samples';
 import {
   DEFAULT_PRODUCT,
@@ -569,7 +570,7 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
       <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
         <a className="wordmark" href="/" aria-label="StudioShelf home">
           <span className="logo">
-            <Layers size={23} strokeWidth={1.7} />
+            <BrandLogo size={30} />
           </span>
           <span>StudioShelf</span>
         </a>
@@ -727,7 +728,7 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                           alt={
                             project.image
                               ? `${project.product.name} product photo`
-                              : `Illustrated sample: ${project.product.name}`
+                              : `AI-generated concept photograph: ${project.product.name}`
                           }
                         />
                       ) : (
@@ -745,7 +746,7 @@ export default function Studio({ initialSampleId }: { initialSampleId?: string }
                       {project.image
                         ? 'Your original photo · resized for export'
                         : photo
-                          ? 'Illustrated sample · fictional product'
+                          ? 'Concept photograph · fictional product'
                           : 'JPG, PNG or WebP · up to 12 MB'}
                     </span>
                     {project.image && (

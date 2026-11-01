@@ -5,7 +5,7 @@ Verified on 1 November 2026 using Node 24.22.1 on Windows.
 ## Automated checks
 
 - Strict TypeScript check passed.
-- Next.js optimized production build passed. It generated the static homepage at `/`, the dynamic workspace at `/studio`, and the dynamic `/api/generate` route.
+- Next.js optimized production build passed. It generated the static homepage and logo favicon, the dynamic workspace at `/studio`, and the dynamic `/api/generate` route.
 - All 12 automated tests passed. Coverage includes input and price validation, template fact retention, malformed AI output, backup validation and unknown-field removal, CSV formula protection, bounded artwork text, cross-origin and request-size rejection, anonymous server-key protection, mocked Gemini requests and provider errors, the new sample backups and Graphite palette, and legacy mug-image fallback.
 - Prettier formatting check passed.
 
@@ -13,14 +13,14 @@ Verified on 1 November 2026 using Node 24.22.1 on Windows.
 
 - Loaded and visually inspected the homepage and studio in both dark and light mode.
 - Confirmed the interface theme persisted after reload and navigation between the homepage and studio.
-- Selected Fragrance on the homepage, followed Start creating to `/studio?sample=fragrance`, and confirmed the studio showed the correct product name while retaining light mode.
-- Confirmed the Tote and Headphones selectors updated the Start creating destination to their corresponding sample URLs.
+- Selected the Tote and Fragrance product previews and confirmed the edit links used the corresponding sample URLs. Followed Create a launch to `/studio?sample=fragrance` and confirmed the correct product appeared.
+- Confirmed the hero photo used Next.js image optimization and loaded successfully. Inspected the generated concept photography and the original logo in the rendered interface.
 - Checked the homepage and studio at the phone breakpoint in both interface themes. With a requested 390-pixel browser viewport and a measured 375-pixel client width, document content width equaled client width on both routes; no horizontal overflow was detected.
 - Opened the mobile navigation and reached Connections.
-- Downloaded a fresh Studio Headphones launch ZIP through the actual studio UI using the Graphite palette.
+- Downloaded a fresh No. 04 fragrance launch ZIP through the actual studio UI using the photographic asset.
 - Verified ZIP integrity and confirmed all five PNGs were 1080 × 1350 pixels. The verified export is bundled at `demo/sample-launch-kit.zip`.
 
-The package includes the current dark homepage at `docs/preview.png`, light homepage at `docs/preview-light.png`, and dark editor at `docs/studio-preview.png`.
+The package includes the current light homepage at `docs/preview.png`, dark homepage at `docs/preview-dark.png`, and light editor at `docs/studio-preview.png`.
 
 ## Earlier workflow checks
 

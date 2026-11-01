@@ -13,7 +13,7 @@ export const SAMPLE_PRODUCTS: SampleProduct[] = [
   {
     id: 'headphones',
     label: 'Headphones',
-    image: '/samples/headphones.svg',
+    image: '/samples/headphones-photo.png',
     theme: 'graphite',
     product: {
       name: 'Studio Headphones',
@@ -31,7 +31,7 @@ export const SAMPLE_PRODUCTS: SampleProduct[] = [
   {
     id: 'fragrance',
     label: 'Fragrance',
-    image: '/samples/fragrance.svg',
+    image: '/samples/fragrance-photo.png',
     theme: 'clay',
     product: {
       name: 'No. 04 Eau de Parfum',
@@ -49,7 +49,7 @@ export const SAMPLE_PRODUCTS: SampleProduct[] = [
   {
     id: 'tote',
     label: 'Everyday tote',
-    image: '/samples/tote.svg',
+    image: '/samples/tote-photo.png',
     theme: 'forest',
     product: {
       name: 'The Everyday Tote',
