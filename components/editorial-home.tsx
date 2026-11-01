@@ -121,6 +121,7 @@ export default function EditorialHome() {
                   fill
                   sizes="(max-width: 600px) 260px, 345px"
                   fetchPriority="high"
+                  loading="eager"
                 />
               </div>
               <div className="ed-paper-copy">
