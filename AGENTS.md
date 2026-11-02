@@ -1,3 +1,9 @@
+# StudioShelf repository workflow
+
+The user owns the private GitHub repository https://github.com/Mustafamgbng/studioshelf.
+
+For subsequent requested code changes, start a feature branch from `main`, commit and push the update, and open a pull request for review. Do not push changes directly to `main` or merge a pull request unless the user asks for that action. Preserve working features and the user's remembered light/dark choice. Keep credentials, local environment files, browser data, dependency folders and generated build output out of Git.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

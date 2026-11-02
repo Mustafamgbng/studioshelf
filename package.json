@@ -8,8 +8,10 @@
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build --webpack",
+    "build:demo": "node scripts/build-demo.mjs --base-path /studioshelf-demo",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "next typegen && tsc --noEmit",
+    "check:shopify": "node --env-file-if-exists=.env.local scripts/check-shopify-config.mjs",
     "test": "tsx --test tests/*.test.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

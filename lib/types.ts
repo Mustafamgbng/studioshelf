@@ -8,6 +8,15 @@ export type Product = {
   currency: string;
   voice: string;
   cta: string;
+  url?: string;
+};
+export type Branding = {
+  logo: string | null;
+  primary: string;
+  background: string;
+  ink: string;
+  voice: string;
+  cta: string;
 };
 export type Slide = { eyebrow: string; headline: string; body: string };
 export type Kit = {
@@ -23,14 +32,31 @@ export type Kit = {
   questions: string[];
 };
 export type Theme = 'clay' | 'lilac' | 'forest' | 'graphite';
+export type SampleId = 'headphones' | 'fragrance' | 'tote';
+export type ProductPhoto = { id: string; src: string; name: string };
+export type CreativeDesign = {
+  layout: 'editorial' | 'spotlight' | 'minimal';
+  typography: 'serif' | 'sans';
+  imageFit: 'contain' | 'cover';
+  imageScale: number;
+  textAlign: 'left' | 'center';
+  showBrand: boolean;
+};
 export type Project = {
   id: string;
   updatedAt: string;
   product: Product;
   kit: Kit;
   image: string | null;
+  sampleId?: SampleId;
+  gallery?: ProductPhoto[];
+  slidePhotos?: (string | null)[];
+  generationBrief?: Product;
+  review?: { signature: string; confirmed: string[] };
   theme: Theme;
   source: 'template' | 'gemini';
+  branding?: Branding;
+  design?: CreativeDesign;
 };
 
 export const DEFAULT_PRODUCT: Product = {

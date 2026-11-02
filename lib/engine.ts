@@ -16,7 +16,7 @@ export function priceLabel(p: Product): string {
 export function validateProduct(value: unknown): Product {
   if (!value || typeof value !== 'object') throw new Error('Add your product details first.');
   const p = value as Record<string, unknown>;
-  const limits: Record<keyof Product, number> = {
+  const limits: Record<Exclude<keyof Product, 'url'>, number> = {
     name: 100,
     brand: 80,
     category: 60,
@@ -28,17 +28,41 @@ export function validateProduct(value: unknown): Product {
     cta: 80,
   };
   const result = {} as Product;
-  for (const key of Object.keys(limits) as (keyof Product)[]) {
+  for (const key of Object.keys(limits) as (keyof typeof limits)[]) {
     if (typeof p[key] !== 'string' || (p[key] as string).length > limits[key])
       throw new Error(`Check the ${key} field (maximum ${limits[key]} characters).`);
     result[key] = (p[key] as string).trim();
   }
   if (!result.name || !result.brand || !result.facts)
     throw new Error('Product name, brand and at least one confirmed fact are required.');
-  if (result.price && (!/^\d+(\.\d{1,2})?$/.test(result.price) || Number(result.price) > 10000000))
-    throw new Error('Enter a valid price, with up to two decimal places.');
-  if (!['USD', 'INR', 'EUR', 'GBP'].includes(result.currency))
+  if (!Intl.supportedValuesOf('currency').includes(result.currency))
     throw new Error('Choose a supported currency.');
+  const decimals =
+    new Intl.NumberFormat('en', { style: 'currency', currency: result.currency }).resolvedOptions()
+      .maximumFractionDigits ?? 2;
+  if (
+    result.price &&
+    (!/^\d+(\.\d{1,3})?$/.test(result.price) ||
+      Number(result.price) > 10000000 ||
+      (result.price.split('.')[1] || '').replace(/0+$/, '').length > decimals)
+  )
+    throw new Error(
+      `Enter a valid price for ${result.currency}, with up to ${decimals} decimal places.`,
+    );
+  if (p.url !== undefined) {
+    if (typeof p.url !== 'string' || p.url.length > 2048) throw new Error('Check the product URL.');
+    if (p.url) {
+      let url: URL;
+      try {
+        url = new URL(p.url);
+      } catch {
+        throw new Error('Use an HTTPS product URL.');
+      }
+      if (url.protocol !== 'https:' || url.username || url.password)
+        throw new Error('Use an HTTPS product URL.');
+      result.url = url.href;
+    }
+  }
   return result;
 }
 
@@ -48,6 +72,7 @@ export function createTemplateKit(p: Product): Kit {
   const price = priceLabel(p);
   const details = facts.join('. ') + '.';
   const cta = p.cta || 'Explore the collection';
+  const linkedCta = `${cta}.${p.url ? `\n${p.url}` : ''}`;
   const title = `${p.name} | ${facts[0] || p.category} | ${p.brand}`;
   const slug = (s: string) =>
     s
@@ -60,16 +85,16 @@ export function createTemplateKit(p: Product): Kit {
   const isDemo = p.name === DEFAULT_PRODUCT.name && p.facts === DEFAULT_PRODUCT.facts;
   return {
     title,
-    description: `${p.name}, by ${p.brand}.\n\n${details}\n\n${price ? `Price: ${price}.\n\n` : ''}${cta}.`,
+    description: `${p.name}, by ${p.brand}.\n\n${details}\n\n${price ? `Price: ${price}.\n\n` : ''}${linkedCta}`,
     bullets: facts,
     tags,
-    instagram: `${isDemo ? 'A little pause. A favourite ritual.' : `Meet ${p.name}.`}\n\n${details}\n\n${price ? `${price}\n` : ''}${cta}.\n\n${tags
+    instagram: `${isDemo ? 'A little pause. A favourite ritual.' : `Meet ${p.name}.`}\n\n${details}\n\n${price ? `${price}\n` : ''}${linkedCta}\n\n${tags
       .slice(0, 5)
       .map((t) => '#' + t.replace(/\s/g, ''))
       .join(' ')}`,
-    whatsapp: `Meet ${p.name} from ${p.brand}.\n\n${facts.map((f) => '• ' + f).join('\n')}\n\n${price ? `${price}\n` : ''}${cta}.`,
+    whatsapp: `Meet ${p.name} from ${p.brand}.\n\n${facts.map((f) => '• ' + f).join('\n')}\n\n${price ? `${price}\n` : ''}${linkedCta}`,
     emailSubject: `${p.name} has arrived`,
-    emailBody: `Meet ${p.name}, from ${p.brand}.\n\n${details}\n\n${price ? `Price: ${price}.\n\n` : ''}${cta}.`,
+    emailBody: `Meet ${p.name}, from ${p.brand}.\n\n${details}\n\n${price ? `Price: ${price}.\n\n` : ''}${linkedCta}`,
     slides: [
       {
         eyebrow: 'MEET YOUR NEW FAVOURITE',
