@@ -1,5 +1,9 @@
 import { validateKit, validateProduct } from './engine';
 import type { Project } from './types';
+import { validateBranding } from './branding';
+import { validateDesign } from './creative';
+import { validateReview } from './review';
+import { imageBudget, validateGallery, validateSlidePhotos } from './gallery';
 
 async function database(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -57,13 +61,32 @@ export function validateProject(value: unknown): Project {
       !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(p.image))
   )
     throw new Error('This backup contains an unsupported image.');
+  if (p.sampleId !== undefined && !['headphones', 'fragrance', 'tote'].includes(p.sampleId))
+    throw new Error('This backup contains an unsupported concept photograph.');
+  const gallery = p.gallery !== undefined ? validateGallery(p.gallery) : undefined;
+  const slidePhotos =
+    p.slidePhotos !== undefined ? validateSlidePhotos(p.slidePhotos, gallery || []) : undefined;
+  const budget = imageBudget({ image: p.image, gallery });
+  if (budget.used > budget.limit)
+    throw new Error(
+      'These photos exceed this kit’s storage budget. Remove a photo or upload a smaller cover.',
+    );
   return {
     id: p.id,
     updatedAt: p.updatedAt,
     product: validateProduct(p.product),
     kit: validateKit(p.kit),
     image: p.image,
+    ...(p.sampleId ? { sampleId: p.sampleId } : {}),
+    ...(gallery ? { gallery } : {}),
+    ...(slidePhotos ? { slidePhotos } : {}),
+    ...(p.generationBrief !== undefined
+      ? { generationBrief: validateProduct(p.generationBrief) }
+      : {}),
     theme: p.theme,
     source: p.source,
+    ...(p.branding ? { branding: validateBranding(p.branding) } : {}),
+    ...(p.design ? { design: validateDesign(p.design) } : {}),
+    ...(p.review ? { review: validateReview(p.review) } : {}),
   };
 }
