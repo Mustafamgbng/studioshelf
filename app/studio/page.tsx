@@ -1,11 +1,20 @@
 import Studio from '@/components/studio';
+import { studioOptions } from '@/lib/studio-route';
 
 export default async function StudioPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sample?: string | string[] }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const sample = typeof params.sample === 'string' ? params.sample : undefined;
-  return <Studio key={sample || 'default'} initialSampleId={sample} />;
+  const options = studioOptions(params);
+  return (
+    <Studio
+      key={JSON.stringify(options)}
+      initialSampleId={options.sample}
+      initialTheme={options.theme}
+      initialSlide={options.slide}
+      initialTab={options.tab}
+    />
+  );
 }

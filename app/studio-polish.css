@@ -1,0 +1,162 @@
+/* Keep overview photos inside their cards without absolute fill positioning. */
+.mobile-nav-backdrop,
+.mobile-nav-close {
+  display: none;
+}
+@media (max-width: 650px) {
+  .mobile-nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 39;
+    border: 0;
+    background: #07101a80;
+    cursor: pointer;
+  }
+  .sidebar-brand-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+  .app-shell .sidebar-brand-row .wordmark {
+    margin: 0;
+    min-width: 0;
+    font-size: 16px;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .app-shell .sidebar-brand-row .wordmark > span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .app-shell .sidebar-brand-row .wordmark > .logo > svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .mobile-nav-close {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+  }
+}
+.wx-sample-photo > img,
+.wx-recent-photo > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wx-overview,
+.wx-hero-copy,
+.wx-recent-copy,
+.ws-project-title > div {
+  min-width: 0;
+}
+
+.wx-active-kit strong,
+.wx-sample-info h3,
+.wx-recent-copy > strong,
+.ws-project-title h1 {
+  overflow-wrap: anywhere;
+}
+
+.wx-caption {
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.wx-button {
+  min-height: 44px;
+  font-size: 12px !important;
+}
+
+@media (max-width: 600px) {
+  .wx-hero-copy > p {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .wx-hero-footnote,
+  .wx-caption,
+  .wx-sample-info p,
+  .wx-brand-callout p,
+  .wx-empty-shelf p,
+  .wx-recent-copy > span {
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .wx-section-heading .wx-kicker,
+  .wx-sample-info > span {
+    font-size: 9px;
+  }
+
+  .wx-text-button {
+    min-height: 44px;
+    font-size: 12px !important;
+  }
+
+  .wx-sample-card {
+    grid-template-columns: 106px minmax(0, 1fr);
+  }
+
+  .wx-sample-photo {
+    height: 160px;
+  }
+
+  .wx-sample-info {
+    padding: 16px 14px;
+  }
+
+  .wx-sample-info h3 {
+    font-size: 22px;
+  }
+
+  .app-shell .output-tabs {
+    gap: 12px;
+    overflow-x: auto;
+  }
+
+  .app-shell .tab {
+    min-height: 44px;
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+
+  .ws-mobile-panes button,
+  .ws-inspector-tabs button,
+  .ws-history .icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .app-shell .field input,
+  .app-shell .field textarea,
+  .app-shell .field select {
+    font-size: 16px;
+  }
+
+  .app-shell .thumbnail > span {
+    font-size: 9px;
+    line-height: 1.4;
+  }
+}
+.brief-fields .price-row {
+  grid-template-columns: minmax(0, 1fr);
+}
+.brief-fields .price-input > select {
+  width: 70px;
+  flex: 0 0 70px;
+}
+.brief-fields .price-input > input {
+  width: 0;
+  min-width: 0;
+  flex: 1 1 0;
+}

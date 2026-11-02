@@ -1,4 +1,4 @@
-import Landing from '@/components/landing';
+import EditorialHome from '@/components/editorial-home';
 export default function Home() {
-  return <Landing />;
+  return <EditorialHome />;
 }
