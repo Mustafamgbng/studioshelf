@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="416" height="80" viewBox="0 0 416 80" fill="none" role="img" aria-labelledby="title">
+  <title id="title">StudioShelf</title>
+  <g transform="translate(0 8) scale(1.333333)">
+    <rect width="48" height="48" rx="12" fill="#14233b"/>
+    <path d="M16 8H39V17H22V22H9V15C9 11.134 12.134 8 16 8Z" fill="#f8f5ee"/>
+    <path d="M32 40H9V31H26V26H39V33C39 36.866 35.866 40 32 40Z" fill="#7793ff"/>
+  </g>
+  <text x="82" y="54" fill="#14233b" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="700" letter-spacing="-1.6">StudioShelf</text>
+</svg>
