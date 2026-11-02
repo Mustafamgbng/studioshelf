@@ -1,0 +1,1372 @@
+.app-shell .sidebar {
+  width: 206px;
+  padding: 25px 14px 16px;
+}
+.app-shell .main-shell {
+  margin-left: 206px;
+  width: calc(100% - 206px);
+}
+.app-shell .main-shell main {
+  padding: 27px 28px 20px;
+  max-width: 1600px;
+}
+.app-shell .nav-item {
+  font-size: 12px;
+  min-height: 42px;
+  border-radius: 8px;
+}
+.app-shell .nav-item.active {
+  background: var(--purple-soft);
+  color: var(--accent);
+}
+.app-shell .nav-item.active svg {
+  color: var(--accent);
+}
+.app-shell .workspace-switch {
+  margin: 26px 3px 22px;
+}
+.app-shell .sidebar-note h3 {
+  font-family: var(--serif);
+  font-size: 21px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin: 12px 0;
+}
+.app-shell .sidebar-note > svg {
+  color: var(--accent);
+}
+.app-shell .topbar {
+  height: 62px;
+  background: var(--paper);
+}
+.app-shell .view-overview .page-heading,
+.app-shell .view-workspace .page-heading {
+  display: none;
+}
+.app-shell .view-overview main {
+  padding-top: 28px;
+}
+.app-shell .page-heading h1 {
+  font: 500 39px/1.13 var(--serif);
+  letter-spacing: -1.25px;
+}
+.app-shell .page-heading p:last-child {
+  font-size: 13px;
+}
+.app-shell .btn {
+  border-radius: 8px;
+  min-height: 39px;
+  font-size: 12px;
+}
+.app-shell .btn-purple {
+  background: var(--button);
+  color: var(--button-ink);
+}
+.ws-commandbar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 0 17px;
+  border-bottom: 1px solid var(--line);
+}
+.ws-commandbar button {
+  white-space: nowrap;
+}
+.ws-back,
+.ws-preview-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border: 0;
+  background: transparent;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.ws-back:hover,
+.ws-preview-button:hover {
+  color: var(--ink);
+  background: var(--hover);
+}
+.ws-history {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+  border-right: 1px solid var(--line);
+  padding-right: 9px;
+}
+.ws-history .icon-btn {
+  height: 33px;
+  width: 32px;
+}
+.ws-project-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px 0 16px;
+}
+.ws-project-title .eyebrow {
+  font: 8px var(--sans);
+  letter-spacing: 1.65px;
+  color: var(--accent);
+}
+.ws-project-title h1 {
+  font: 500 33px/1.2 var(--serif);
+  letter-spacing: -0.8px;
+  margin: 8px 0;
+}
+.ws-project-title p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+}
+.ws-project-title p span {
+  margin: 0 8px;
+  color: var(--faint);
+}
+.ws-project-title > button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 10px;
+  background: var(--paper);
+  color: var(--secondary);
+}
+.ws-mobile-panes {
+  display: none;
+}
+.app-shell .workspace-grid {
+  grid-template-columns: 268px minmax(0, 1fr);
+  gap: 18px;
+}
+.app-shell .brief-panel,
+.app-shell .output-panel {
+  border-radius: 13px;
+  border-color: var(--line);
+  box-shadow: 0 4px 20px #00000002;
+}
+.app-shell .section-label {
+  padding: 0 16px;
+  height: 52px;
+}
+.app-shell .section-label h2 {
+  font-size: 12px;
+}
+.app-shell .photo-zone {
+  margin: 15px 16px 10px;
+}
+.app-shell .photo-button {
+  height: 158px;
+  border-radius: 8px;
+}
+.app-shell .brief-fields {
+  padding: 8px 16px 17px;
+}
+.app-shell .brief-fields .field input,
+.app-shell .brief-fields .field select,
+.app-shell .brief-fields .field textarea {
+  font-size: 12px;
+}
+.app-shell .brief-fields .field > span {
+  font-size: 11px;
+}
+.app-shell .generate-btn {
+  font-size: 11px;
+}
+.app-shell .output-head {
+  padding: 19px 20px 16px;
+}
+.app-shell .output-head h2 {
+  font: 500 23px/1.2 var(--serif);
+  letter-spacing: -0.65px;
+}
+.app-shell .output-tabs {
+  padding: 0 20px;
+  gap: 22px;
+}
+.app-shell .tab {
+  font-size: 11px;
+  padding-bottom: 13px;
+}
+.ws-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 215px;
+  min-width: 0;
+}
+.ws-stage-main {
+  min-width: 0;
+  padding-bottom: 13px;
+}
+.app-shell .artboard {
+  margin: 14px 14px 0;
+  padding: 0 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--artboard);
+  background-image: radial-gradient(var(--line-strong) 0.7px, transparent 0.7px);
+  background-size: 12px 12px;
+  overflow: hidden;
+}
+.app-shell .artboard-tools {
+  padding: 12px 12px 6px;
+  background: var(--artboard);
+}
+.app-shell .artboard-tools > span {
+  font-size: 7px;
+  letter-spacing: 0.6px;
+}
+.app-shell .artboard-tools i {
+  display: block;
+  margin: 3px 0 0;
+  font-size: 8px;
+}
+.app-shell .theme-dots {
+  gap: 7px;
+}
+.app-shell .theme-dots button {
+  width: 14px;
+  height: 14px;
+}
+.ws-canvas-scroll {
+  overflow: auto;
+  max-height: 580px;
+  padding: 20px 25px 14px;
+  scrollbar-width: thin;
+}
+.app-shell .ws-canvas-scroll .main-preview {
+  max-width: none;
+  margin: 0 auto;
+  min-width: 0;
+  transition: width 0.18s ease;
+}
+.app-shell .canvas-frame {
+  position: relative;
+  border-radius: 2px;
+  box-shadow: 0 12px 28px #14233b16;
+}
+.ws-preview-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 10px;
+  background: var(--panel);
+}
+.small .ws-preview-loader span {
+  display: none;
+}
+.ws-canvas-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin: 3px auto 9px;
+  width: max-content;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper);
+  overflow: hidden;
+}
+.ws-canvas-controls button {
+  border: 0;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  height: 27px;
+  min-width: 28px;
+  font-size: 9px;
+  color: var(--muted);
+}
+.ws-canvas-controls button:nth-child(2) {
+  min-width: 43px;
+}
+.ws-canvas-controls button:last-child {
+  border-left: 1px solid var(--line);
+}
+.ws-canvas-controls button:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+.app-shell .slide-navigation {
+  padding: 0 12px;
+  gap: 20px;
+}
+.app-shell .slide-navigation .icon-btn {
+  width: 27px;
+  height: 27px;
+}
+.app-shell .slide-navigation > span {
+  font-size: 9px;
+}
+.app-shell .slide-thumbnails {
+  gap: 8px;
+  padding: 13px 14px 0;
+}
+.app-shell .thumbnail {
+  padding: 4px;
+  border-radius: 6px;
+}
+.app-shell .thumbnail .canvas-frame {
+  border-radius: 2px;
+}
+.app-shell .thumbnail > span {
+  font-size: 7px;
+  line-height: 1.25;
+  min-height: 20px;
+  padding-top: 5px;
+}
+.ws-inspector {
+  min-width: 0;
+  border-left: 1px solid var(--line);
+  background: var(--paper);
+  padding-bottom: 15px;
+}
+.ws-inspector-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 14px;
+}
+.ws-inspector-tabs button {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10px;
+  padding: 7px;
+}
+.ws-inspector-tabs button[aria-pressed='true'] {
+  background: var(--raised);
+  color: var(--ink);
+}
+.ws-inspector .cr-controls {
+  padding: 0 12px;
+}
+.ws-inspector .slide-editor {
+  border: 0;
+  margin: 0;
+  padding: 0 12px;
+}
+.ws-inspector .slide-editor h3 {
+  font-size: 11px;
+  font-weight: 550;
+  margin: 6px 0 14px;
+}
+.ws-inspector .editor-fields {
+  padding: 0;
+}
+.ws-inspector .field > span {
+  font-size: 10px;
+}
+.ws-inspector .field input,
+.ws-inspector .field textarea {
+  font-size: 11px;
+  padding: 9px;
+}
+.ws-inspector .editor-fields > .btn {
+  width: 100%;
+  min-height: 34px;
+  font-size: 10px;
+  margin-top: 9px;
+}
+.ws-inspector .editor-fields > small {
+  font-size: 9px;
+  color: var(--faint);
+  line-height: 1.5;
+  display: block;
+}
+.app-shell .output-footer {
+  padding: 15px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+}
+.app-shell .under-workspace {
+  padding: 19px 0 8px;
+  font-size: 10px;
+}
+.app-shell .text-panel {
+  padding: 20px;
+  max-width: none;
+}
+.ws-proof {
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--paper);
+  margin: 0 0 24px;
+}
+.ws-proof-chrome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--line);
+  font-size: 10px;
+  color: var(--secondary);
+  background: var(--panel);
+}
+.ws-proof-chrome > span:last-child {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 8px;
+}
+.ws-proof-product {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: 23px;
+  padding: 22px;
+}
+.ws-proof-photo {
+  min-height: 230px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.ws-proof-photo img {
+  width: 100%;
+  height: 100%;
+  max-height: 350px;
+  object-fit: contain;
+}
+.ws-proof-photo > span {
+  font: 60px var(--serif);
+  color: var(--accent);
+}
+.ws-proof-product small {
+  color: var(--accent);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+}
+.ws-proof-product h3 {
+  font: 500 23px/1.2 var(--serif);
+  letter-spacing: -0.5px;
+  margin: 9px 0 !important;
+  overflow-wrap: anywhere;
+}
+.ws-proof-price {
+  font-size: 13px;
+  display: block;
+  margin-bottom: 15px;
+}
+.ws-proof-product p {
+  white-space: pre-wrap;
+  font-size: 10px;
+  line-height: 1.65;
+  color: var(--secondary);
+  overflow-wrap: anywhere;
+}
+.ws-proof-product ul {
+  padding: 0;
+  list-style: none;
+  margin-top: 15px;
+}
+.ws-proof-product li {
+  display: flex;
+  gap: 5px;
+  font-size: 9px;
+  color: var(--muted);
+  margin-bottom: 7px;
+  line-height: 1.5;
+}
+.ws-proof-product li svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--success);
+}
+.ws-proof-note {
+  padding: 10px 15px;
+  border-top: 1px solid var(--line);
+  font-size: 9px;
+  color: var(--faint);
+  line-height: 1.6;
+}
+.ws-inline-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 10px;
+  text-decoration: none;
+}
+.ws-inline-action:hover {
+  text-decoration: underline;
+}
+.ws-proof-switch,
+.ws-channel-refresh {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.ws-proof-switch button,
+.ws-channel-refresh button {
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--muted);
+  font-size: 10px;
+}
+.ws-proof-switch button[aria-pressed='true'] {
+  background: var(--raised);
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+.ws-channel-refresh button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ws-proof-social {
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.ws-proof-social .canvas-frame {
+  border-radius: 0;
+  box-shadow: none;
+}
+.ws-proof-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--page);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+}
+.ws-proof-social .ws-proof-chrome > svg:last-child {
+  margin-left: auto;
+}
+.ws-caption-body {
+  padding: 13px 16px;
+  font-size: 10px;
+}
+.ws-caption-body p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+  color: var(--secondary);
+}
+.ws-proof-mail {
+  max-width: 620px;
+}
+.ws-email-meta {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 8px;
+  padding: 17px;
+  font-size: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.ws-email-meta > span {
+  color: var(--muted);
+}
+.ws-email-body {
+  padding: 20px 28px;
+  white-space: pre-wrap;
+  color: var(--secondary);
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.ws-email-body p {
+  margin: 0;
+}
+.ws-brand-workspace {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 24px;
+  align-items: start;
+}
+.ws-brand-preview {
+  position: sticky;
+  top: 84px;
+  padding: 28px !important;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  display: grid;
+  gap: 20px;
+}
+.ws-brand-preview h2 {
+  font: 500 30px/1.15 var(--serif);
+  margin: 10px 0;
+}
+.ws-brand-preview p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.ws-brand-preview > .canvas-frame {
+  max-width: 330px;
+  margin: auto;
+}
+.ws-brand-preview-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 23px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.ws-brand-preview-nav button {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 5px;
+  width: 29px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+}
+.ws-preview-modal {
+  width: min(960px, calc(100vw - 34px)) !important;
+  max-width: 960px !important;
+  padding: 24px !important;
+}
+.ws-large-preview {
+  max-width: 440px;
+  margin: 0 auto;
+  text-align: center;
+}
+.ws-large-preview > .canvas-frame {
+  max-width: 400px;
+  margin: auto;
+}
+.ws-large-preview > .btn {
+  margin: 18px auto 0;
+}
+.ws-large-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.ws-large-proof {
+  max-width: 650px;
+  margin: 0 auto;
+}
+.ws-large-proof .ws-proof-social {
+  max-width: 390px;
+}
+.ws-export-modal {
+  width: min(600px, calc(100vw - 28px)) !important;
+  max-width: 600px !important;
+  padding: 25px !important;
+}
+.ws-export-intro {
+  display: grid;
+  grid-template-columns: 95px minmax(0, 1fr);
+  gap: 21px;
+  align-items: center;
+  margin: 25px 0;
+}
+.ws-export-intro h3 {
+  font: 500 26px/1.15 var(--serif);
+  margin: 8px 0 10px;
+}
+.ws-export-intro p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.ws-export-intro section > span:last-child {
+  font-size: 10px;
+  color: var(--muted);
+}
+.ws-export-manifest {
+  list-style: none;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  margin: 10px 0;
+}
+.ws-export-manifest li {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 14px 0;
+}
+.ws-export-manifest li > svg {
+  color: var(--success);
+}
+.ws-export-manifest strong,
+.ws-export-manifest small {
+  display: block;
+  font-size: 12px;
+}
+.ws-export-manifest small {
+  font-size: 10px;
+  margin-top: 5px;
+  color: var(--muted);
+}
+.ws-export-manifest li > span:last-child {
+  margin-left: auto;
+  font-size: 9px;
+  color: var(--faint);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 3px 6px;
+}
+.ws-export-note {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 18px 0;
+}
+.ws-export-primary {
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.ws-tour-modal {
+  width: min(850px, calc(100vw - 28px)) !important;
+  max-width: 850px !important;
+  padding: 25px !important;
+}
+.ws-tour-progress {
+  display: flex;
+  gap: 7px;
+  margin: 23px 0;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 17px;
+}
+.ws-tour-progress button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  font-size: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  text-align: left;
+}
+.ws-tour-progress button > span {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 10px;
+}
+.ws-tour-progress button[aria-current='step'] {
+  color: var(--accent);
+}
+.ws-tour-progress button[aria-current='step'] > span {
+  background: var(--accent);
+  color: var(--paper);
+}
+.ws-tour-step > h3,
+.ws-tour-design h3 {
+  font: 500 31px/1.1 var(--serif);
+  margin: 7px 0 15px;
+}
+.ws-tour-step > p,
+.ws-tour-design section > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  max-width: 550px;
+}
+.ws-tour-samples {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0 7px;
+}
+.ws-tour-samples > button {
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--paper);
+  text-align: left;
+}
+.ws-tour-samples img {
+  width: 100%;
+  height: 165px;
+  object-fit: cover;
+}
+.ws-tour-samples strong {
+  display: block;
+  font: 500 20px var(--serif);
+  padding: 12px 12px 8px;
+}
+.ws-tour-samples span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px 15px;
+  font-size: 9px;
+  color: var(--muted);
+}
+.ws-tour-design {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: 27px;
+  align-items: start;
+}
+.ws-tour-design > .canvas-frame {
+  max-width: 290px;
+}
+.ws-tour-design .cr-controls {
+  padding: 0;
+  margin: 15px 0;
+}
+.ws-tour-design section > .btn {
+  margin-top: 15px;
+}
+.ws-tour-final {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 25px;
+  margin-top: 20px;
+  align-items: center;
+}
+.ws-tour-final section {
+  display: grid;
+  gap: 12px;
+}
+.app-shell .saved-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--paper);
+}
+.app-shell .saved-card > button:first-child {
+  background: var(--panel);
+  padding: 17px 30px;
+}
+.app-shell .saved-card .canvas-frame {
+  max-width: 180px;
+  margin: auto;
+  transition: transform 0.2s ease;
+}
+.app-shell .saved-card:hover .canvas-frame {
+  transform: translateY(-3px);
+}
+.app-shell .saved-toolbar {
+  margin-bottom: 22px;
+}
+.app-shell .connections-grid .settings-card {
+  border-radius: 13px;
+  padding: 26px;
+}
+.app-shell .settings-card h2 {
+  font-family: var(--serif);
+  font-size: 29px;
+}
+.app-shell .review-panel h3 {
+  font-family: var(--serif);
+  font-size: 30px;
+}
+.app-shell .review-panel {
+  font-size: 12px;
+}
+.app-shell .review-panel .fact-list > div {
+  font-size: 12px;
+}
+.app-shell .text-panel .text-intro h3 {
+  font-family: var(--serif);
+  font-size: 27px;
+}
+.app-shell .copy-field textarea {
+  font-size: 12px;
+  line-height: 1.75;
+}
+.app-shell button:focus-visible,
+.app-shell a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.app-shell dialog .modal-head h2 {
+  font-family: var(--serif);
+  font-size: 26px;
+  letter-spacing: -0.6px;
+}
+.app-shell dialog {
+  border-radius: 14px;
+}
+.app-shell .alert {
+  font-size: 12px;
+}
+@media (min-width: 1600px) {
+  .app-shell .workspace-grid {
+    grid-template-columns: 290px minmax(0, 1fr);
+  }
+  .ws-stage {
+    grid-template-columns: minmax(0, 1fr) 255px;
+  }
+  .ws-inspector .cr-controls {
+    padding: 0 17px;
+  }
+  .ws-canvas-scroll {
+    padding: 24px;
+  }
+}
+@media (max-width: 1250px) {
+  .ws-stage {
+    grid-template-columns: minmax(0, 1fr) 195px;
+  }
+  .app-shell .workspace-grid {
+    grid-template-columns: 245px minmax(0, 1fr);
+  }
+  .app-shell .main-shell main {
+    padding-left: 21px;
+    padding-right: 21px;
+  }
+  .app-shell .output-head h2 {
+    font-size: 20px;
+  }
+  .ws-inspector .cr-controls {
+    padding: 0 9px;
+  }
+  .ws-commandbar {
+    gap: 6px;
+  }
+  .ws-commandbar .btn {
+    padding: 9px 11px;
+    font-size: 10px;
+  }
+  .ws-project-title h1 {
+    font-size: 29px;
+  }
+}
+@media (max-width: 1100px) {
+  .app-shell .workspace-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ws-mobile-panes {
+    display: flex;
+    gap: 7px;
+    margin: 1px 0 16px;
+  }
+  .ws-mobile-panes button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .ws-mobile-panes button[aria-pressed='true'] {
+    background: var(--raised);
+    border-color: var(--line-strong);
+    color: var(--ink);
+  }
+  .workspace-grid[data-pane='canvas'] > .brief-panel {
+    display: none;
+  }
+  .workspace-grid[data-pane='brief'] > .output-panel {
+    display: none;
+  }
+  .app-shell .brief-panel {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .app-shell .photo-button {
+    height: 235px;
+  }
+  .app-shell .brief-fields {
+    padding: 18px 22px;
+  }
+  .app-shell .brief-fields .field input,
+  .app-shell .brief-fields .field select,
+  .app-shell .brief-fields .field textarea {
+    font-size: 13px;
+  }
+  .ws-stage {
+    grid-template-columns: minmax(0, 1fr) 230px;
+  }
+  .ws-inspector .cr-controls {
+    padding: 0 14px;
+  }
+  .ws-brand-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ws-brand-preview {
+    position: static;
+  }
+  .ws-commandbar .btn {
+    font-size: 11px;
+  }
+  .ws-project-title {
+    padding-top: 20px;
+  }
+  .ws-proof-product {
+    gap: 18px;
+  }
+}
+@media (max-width: 850px) {
+  .ws-brand-workspace {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+  .ws-stage {
+    grid-template-columns: minmax(0, 1fr) 250px;
+  }
+  .app-shell .main-shell main {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}
+@media (max-width: 650px) {
+  .app-shell .sidebar {
+    visibility: hidden;
+  }
+  .app-shell .sidebar.open {
+    visibility: visible;
+  }
+  .app-shell .main-shell {
+    margin-left: 0;
+    width: 100%;
+  }
+  .app-shell .brief-panel {
+    display: block;
+  }
+  .app-shell .main-shell main {
+    padding: 15px 16px;
+  }
+  .app-shell .topbar {
+    height: 58px;
+  }
+  .app-shell .page-heading h1 {
+    font-size: 30px;
+  }
+  .app-shell .page-heading > .btn {
+    font-size: 10px;
+    padding: 9px;
+  }
+  .ws-commandbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 0 14px;
+  }
+  .ws-back {
+    flex: 1;
+    font-size: 10px;
+    padding-left: 0;
+  }
+  .ws-history {
+    margin-left: 0;
+    padding-right: 0;
+    border: 0;
+  }
+  .ws-commandbar > .btn {
+    flex: 1 1 calc(50% - 8px);
+    justify-content: center;
+    font-size: 11px;
+  }
+  .ws-preview-button {
+    font-size: 10px;
+  }
+  .ws-project-title {
+    align-items: flex-start;
+    padding: 18px 0 15px;
+  }
+  .ws-project-title h1 {
+    font-size: 28px;
+    overflow-wrap: anywhere;
+  }
+  .ws-project-title p {
+    font-size: 10px;
+    line-height: 1.8;
+  }
+  .ws-project-title .eyebrow {
+    font-size: 7px;
+  }
+  .ws-project-title > button {
+    font-size: 0;
+    padding: 8px;
+  }
+  .ws-project-title > button svg {
+    width: 15px;
+    height: 15px;
+  }
+  .ws-project-title p span {
+    margin: 0 5px;
+  }
+  .app-shell .sample-rail {
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 4px;
+  }
+  .app-shell .sample-rail > span {
+    font-size: 9px;
+  }
+  .app-shell .sample-own {
+    font-size: 9px;
+  }
+  .app-shell .sample-chip {
+    font-size: 9px;
+    padding-right: 7px;
+    gap: 5px;
+  }
+  .app-shell .sample-chip img {
+    width: 23px;
+    height: 23px;
+  }
+  .app-shell .sample-rail > div {
+    gap: 5px;
+  }
+  .ws-mobile-panes {
+    margin-top: 2px;
+  }
+  .ws-mobile-panes button {
+    font-size: 11px;
+    flex: 1;
+    justify-content: center;
+    padding: 10px 6px;
+  }
+  .app-shell .output-head {
+    padding: 17px 16px 15px;
+  }
+  .app-shell .output-head h2 {
+    font-size: 21px;
+    max-width: 190px;
+  }
+  .app-shell .output-head .eyebrow {
+    font-size: 7px;
+  }
+  .app-shell .engine-badge {
+    font-size: 7px;
+    padding: 5px;
+  }
+  .app-shell .output-tabs {
+    gap: 20px;
+    padding: 0 16px;
+  }
+  .app-shell .tab {
+    font-size: 10px;
+  }
+  .ws-stage {
+    display: block;
+  }
+  .app-shell .artboard {
+    margin: 11px 11px 0;
+  }
+  .ws-canvas-scroll {
+    max-height: 570px;
+    padding: 18px 17px 13px;
+  }
+  .app-shell .ws-canvas-scroll .main-preview {
+    --canvas-base: 250px;
+    max-width: none;
+  }
+  .app-shell .slide-thumbnails {
+    gap: 5px;
+    padding: 12px 11px;
+  }
+  .app-shell .thumbnail {
+    padding: 3px;
+  }
+  .app-shell .thumbnail > span {
+    font-size: 6px;
+    line-height: 1.3;
+  }
+  .ws-inspector {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 2px 7px 20px;
+  }
+  .ws-inspector-tabs button {
+    font-size: 12px;
+    min-height: 35px;
+  }
+  .ws-inspector .cr-controls {
+    padding: 0 7px;
+  }
+  .ws-inspector .slide-editor {
+    padding: 0 9px;
+  }
+  .ws-inspector .field input,
+  .ws-inspector .field textarea {
+    font-size: 12px;
+  }
+  .ws-inspector .editor-fields > .btn {
+    font-size: 11px;
+  }
+  .app-shell .output-footer {
+    padding: 13px;
+    gap: 9px;
+  }
+  .app-shell .output-footer > .btn {
+    font-size: 10px;
+    padding: 9px;
+  }
+  .app-shell .text-panel {
+    padding: 15px;
+  }
+  .ws-proof-product {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+    gap: 17px;
+  }
+  .ws-proof-photo {
+    min-height: 200px;
+    max-height: 250px;
+  }
+  .ws-proof-product h3 {
+    font-size: 24px;
+  }
+  .ws-proof-product p {
+    font-size: 11px;
+  }
+  .ws-proof-product li {
+    font-size: 10px;
+  }
+  .ws-proof-note {
+    font-size: 8px;
+  }
+  .ws-channel-refresh button {
+    font-size: 9px;
+    padding: 7px;
+  }
+  .ws-proof-social {
+    max-width: 290px;
+  }
+  .ws-proof-chrome {
+    padding: 10px;
+    font-size: 9px;
+  }
+  .ws-email-body {
+    padding: 17px;
+    font-size: 11px;
+  }
+  .ws-brand-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ws-brand-preview {
+    padding: 20px !important;
+  }
+  .ws-brand-preview h2 {
+    font-size: 28px;
+  }
+  .ws-preview-modal,
+  .ws-tour-modal,
+  .ws-export-modal {
+    padding: 18px !important;
+    max-height: calc(100dvh - 28px);
+  }
+  .app-shell dialog .modal-head h2 {
+    font-size: 23px;
+  }
+  .ws-tour-progress {
+    gap: 3px;
+    margin: 17px 0;
+  }
+  .ws-tour-progress button {
+    font-size: 8px;
+    gap: 4px;
+    padding: 0;
+  }
+  .ws-tour-progress button > span {
+    width: 20px;
+    height: 20px;
+    font-size: 9px;
+  }
+  .ws-tour-step > h3,
+  .ws-tour-design h3 {
+    font-size: 28px;
+  }
+  .ws-tour-samples {
+    gap: 8px;
+  }
+  .ws-tour-samples img {
+    height: 105px;
+  }
+  .ws-tour-samples strong {
+    font-size: 14px;
+    padding: 9px 8px 6px;
+  }
+  .ws-tour-samples span {
+    font-size: 7px;
+    padding: 0 8px 12px;
+  }
+  .ws-tour-design {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+  .ws-tour-design > div {
+    max-width: 230px;
+    margin: auto;
+    width: 100%;
+  }
+  .ws-tour-final {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 19px;
+  }
+  .ws-tour-final > div {
+    max-width: 220px;
+    margin: auto;
+  }
+  .ws-tour-final section {
+    margin-bottom: 10px;
+  }
+  .ws-export-intro {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 15px;
+  }
+  .ws-export-intro h3 {
+    font-size: 23px;
+  }
+  .ws-export-intro p {
+    font-size: 10px;
+  }
+  .ws-export-manifest strong {
+    font-size: 11px;
+  }
+  .ws-export-manifest small {
+    font-size: 9px;
+  }
+  .ws-large-preview > .canvas-frame {
+    max-width: 300px;
+  }
+  .app-shell .saved-card > button:first-child {
+    padding: 18px 30px;
+  }
+  .app-shell .under-workspace {
+    font-size: 9px;
+    line-height: 1.7;
+  }
+  .ws-proof-switch button {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .ws-canvas-scroll .main-preview,
+  .app-shell .saved-card .canvas-frame {
+    transition: none;
+  }
+}
